@@ -1,3 +1,6 @@
+# Ignore test_output directory
+test_outputs/
+
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
