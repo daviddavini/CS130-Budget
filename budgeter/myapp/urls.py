@@ -1,8 +1,6 @@
 from django.urls import path
-
-from . import views
+from .views import sample_api
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path('sample/', sample_api),
 ]
-
