@@ -23,5 +23,5 @@ class OCRServiceTest(TestCase):
         self.assertIsInstance(result, dict)  # Check if the result is a dictionary
         self.assertIn('ParsedResults', result)  # Check if 'ParsedResults' key exists in response
         # Write the JSON result to a file
-        with open('myapp/utils/test_outputs/ocr_results.json', 'w') as json_file:
-            json.dump(result, json_file, indent=4)  # Pretty print with indentation
+        # with open('myapp/utils/test_outputs/ocr_results.json', 'w') as json_file:
+           # json.dump(result, json_file, indent=4)  # Pretty print with indentation
