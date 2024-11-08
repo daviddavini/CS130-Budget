@@ -3,13 +3,15 @@
 cd CS130-Budget
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt  # each time you pull
 cd budgeter
+python manage.py migrate  # each time you pull
 python manage.py runserver
 ```
 In a separate terminal:
 ```
 cd frontend
+npm install  # each time you pull
 npm start
 ```
 
