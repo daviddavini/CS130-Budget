@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import './App.css';
+import LocationSearch from './LocationSearch';
 
 function App() {
-    const [message, setMessage] = useState('');
-
-    useEffect(() => {
-        fetch('/api/sample/')
-            .then((response) => response.json())
-            .then((data) => setMessage(data.message));
-    }, []);
-
     return (
         <div>
-            <h1>{message}</h1>
+            <h1>hi</h1>
+            <LocationSearch />
         </div>
     );
 }
