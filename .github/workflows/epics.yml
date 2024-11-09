@@ -2,6 +2,9 @@ name: Update epics
 on:
   issues:
     types: [opened, created, closed, reopened, deleted]
+permissions:
+  issues: write
+  contents: read
 jobs:
   epics:
     runs-on: ubuntu-latest
