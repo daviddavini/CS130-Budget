@@ -15,6 +15,7 @@ const Navbar = () => {
                 <ul>
                     <li><Link to="/" onClick={() => setIsOpen(false)}>Home</Link></li>
                     <li><Link to="/shops" onClick={() => setIsOpen(false)}>Local Businesses</Link></li>
+                    <li><Link to="/log" onClick={() => setIsOpen(false)}>Log Spending</Link></li>
                 </ul>
             </nav>
             <div className="hamburger-menu" onClick={toggleMenu}>
