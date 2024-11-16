@@ -26,4 +26,4 @@ def receipt_scanning(request):
     image = request.FILES['image']
     
     receipt_handler = ReceiptHandler(settings.OCR_API_KEY)
-    return receipt_handler.scan_receipt(self, image)
+    return Response(receipt_handler.scan_receipt(image))
