@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import LocationResults from './LocationResults'
+import LocationResults from './LocationResults';
+import './LocationSearch.css';
 
 function LocationSearch() {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
@@ -31,19 +32,21 @@ function LocationSearch() {
   };
 
   return (
-    <div>
-      <h1>Your Location</h1>
-      <button onClick={handleGetLocation} disabled={loading}>
+    <div className="location-search">
+      <h1>📍 Local Business Finder</h1>
+      <h3>First, we'll need to access your location</h3>
+      <button className="get-location-btn" onClick={handleGetLocation} disabled={loading}>
         {loading ? "Fetching..." : "Get My Location"}
       </button>
-
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {error && <p className="error-message">Error: {error}</p>}
 
       {location.latitude && location.longitude ? (
-        <div>
-          <p>Latitude: {location.latitude}</p>
-          <p>Longitude: {location.longitude}</p>
-          <LocationResults lat={location.latitude} lon={location.longitude} radius={1000} />
+        <div className="results-container">
+          {/* <p>Latitude: {location.latitude}</p> */}
+          {/* <p>Longitude: {location.longitude}</p> */}
+          <div className="location-results">
+            <LocationResults lat={location.latitude} lon={location.longitude} radius={1000} />
+          </div>
         </div>
       ) : (
         !loading && <p>Location not fetched yet.</p>
@@ -53,4 +56,3 @@ function LocationSearch() {
 }
 
 export default LocationSearch;
-
