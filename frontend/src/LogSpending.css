@@ -1,0 +1,45 @@
+.log-spending .options {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.log-spending form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.log-spending label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+.log-spending input[type="text"],
+.log-spending input[type="number"],
+.log-spending input[type="date"],
+.log-spending input[type="file"] {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
