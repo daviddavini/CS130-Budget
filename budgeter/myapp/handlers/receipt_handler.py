@@ -16,8 +16,7 @@ class ReceiptHandler:
                'language': 'eng'}
 
         response = requests.post(self.api_url, files={'file': image}, data=payload)
-        print(self.parse_ocr_output(response.json()))
-        return response.json()
+        return self.parse_ocr_output(response.json())
 
     # response is json format
     def parse_ocr_output(self, response):
