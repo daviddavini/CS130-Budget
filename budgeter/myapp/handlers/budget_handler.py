@@ -7,11 +7,21 @@ class BudgetHandler(Publisher):
         self.start_date = date
         self.last_mod = date
 
-    def make_spending_goal(self, goal):
+    def make_spending_goal(self, user, amount, start_date, end_date, spending_type):
+        goal = Goal(
+            user=user,
+            amount=amount,
+            start_date=start_date,
+            end_date=end_date,
+            spending_type=spending_type
+            )
+        goal.save()
         super().add_goal(goal)
+        return goal
 
     def finish_spending_goal(self, goal):
         super().remove_goal(goal)
+        goal.delete()
 
     def add_spendings(self, component: SpendingComponent):
         self.spendings.add(component)

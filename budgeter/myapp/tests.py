@@ -4,6 +4,7 @@ import json
 from dotenv import load_dotenv
 from .ocr_service import OCRHandler
 from .categorizer import Categorizer
+from .models import Goal
 
 
 class OCRServiceTest(TestCase):
@@ -41,3 +42,15 @@ class CategorizerTest(TestCase):
         expected_result = "Food"
         category = self.categorizer.categorize_item("eggs")
         self.assertEqual(category, expected_result)  # Check if the returned category is as expected
+        
+
+"""
+class GoalModelTest(TestCase):
+    def setUp(self):
+        Goal.objects.create(user="John Doe", amount=1000.00, start_date="2024-01-01", end_date="2024-12-31", spending_type="Housing")
+
+    def test_goal_creation(self):
+        goal = Goal.objects.get(user="John Doe")
+        self.assertEqual(goal.amount, 1000.00)
+        self.assertEqual(goal.spending_type, "Housing")
+"""
