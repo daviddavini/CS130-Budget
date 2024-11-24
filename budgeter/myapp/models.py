@@ -16,7 +16,7 @@ class SpendingType(models.TextChoices):
     Travel = "Travel"
     Gifting = "Gifting"
     Misc = "Misc"
-    
+
 # Create your models here.
 class Transaction(models.Model):
     user = models.CharField(max_length=30)
@@ -29,3 +29,13 @@ class Transaction(models.Model):
         default=SpendingType.Misc
         )
     
+class Goal(models.Model):
+    user = models.CharField(max_length=30)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    spending_type = models.CharField(
+        max_length = 15,
+        choices=SpendingType.choices,
+        default=SpendingType.Misc
+        )
