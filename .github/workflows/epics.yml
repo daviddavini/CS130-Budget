@@ -2,13 +2,16 @@ name: Update epics
 on:
   issues:
     types: [opened, created, closed, reopened, deleted]
+permissions:
+  issues: write
+  contents: read
 jobs:
   epics:
     runs-on: ubuntu-latest
     name: Update epic issues
     steps:
       - name: Run epics action
-        uses: cloudaper/epics-action@v1.0.2
+        uses: cloudaper/epics-action@v1.1.7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           epic-label-name: epic

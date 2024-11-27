@@ -1,3 +1,31 @@
+## Setup
+```
+cd CS130-Budget
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt  # each time you pull
+cd budgeter
+python manage.py migrate  # each time you pull
+python manage.py runserver
+```
+In a separate terminal:
+```
+cd frontend
+npm install  # each time you pull
+npm start
+```
+
+## Skeleton code
+An example backend Django REST API is defined in `budgeter/myapp/views.py`. The URL for this api is determined by `myapp/urls.py` and `mysite/urls.py`.
+An example API call from the React frontend is in `App.js`.
+
+
+## Production
+When we build for production, we gotta do
+```
+npm run build
+```
+
 # Repository Template
 
 [![Build Status](https://app.travis-ci.com/melaasar/cs130-template.svg?branch=master)](https://app.travis-ci.com/github/melaasar/cs130-template)
