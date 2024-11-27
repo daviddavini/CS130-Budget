@@ -6,3 +6,4 @@ requests>=2.26.0
 djangorestframework
 django-cors-headers
 fuzzywuzzy
+google-generative-ai
