@@ -21,12 +21,26 @@ const LogSpending = () => {
     setReceipt(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isManual) {
       console.log('Manual Entry:', formData);
     } else if (receipt) {
-      console.log('Uploaded Receipt:', receipt.name);
+        const form = new FormData();
+	form.append('image', receipt); // Use 'receipt' as the key
+
+	try {
+            const response = await fetch('http://localhost:8000/api/scan/', {
+		method: 'POST',
+		body: form,
+            });
+
+	    const result = await response.json();
+	    console.log('OCR Result:', result);
+	} catch (error) {
+            console.error('Error:', error);
+	}
+	console.log('Uploaded Receipt:', receipt.name);
     }
     setFormData({ description: '', amount: '', category: '', date: '' });
     setReceipt(null);
