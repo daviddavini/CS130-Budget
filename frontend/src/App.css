@@ -1,10 +1,9 @@
-.App {
-  text-align: center;
-}
-
-.app {
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 h1 {
@@ -12,23 +11,59 @@ h1 {
   margin-bottom: 20px;
 }
 
-.content {
-  flex-grow: 1;
-  margin: 0 auto;
-  margin-top: 60px;
-  padding: 20px;
-  /* margin-top: 60px; */
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  border-radius: 40px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: margin-left 0.3s ease, width 0.3s ease;
+/* Dark Mode Colors */
+.dark {
+  background-color: rgb(20, 20, 69); /* Background */
+  color: white; /* Text */
+  height: auto;
 }
 
-.sidebar.open ~ .content {
+/* Light Mode Colors */
+.light {
+  background-color:white; /* Background */
+  color: black; /* Text */
+  height: auto;
+}
+
+.App {
+  text-align: center;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: inherit;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.content {
+  flex-grow: 1;
+  margin: auto;
+  margin-top: 60px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: ghostwhite;
+  border-radius: 40px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: margin-left 0.3s ease, width 0.3s ease, background-color 0.3s ease;
+}
+
+.app.dark .content {
+  background-color: rgb(45, 64, 118);
+}
+
+.app.light .content {
+  background-color: ghostwhite;
+}
+
+/* .sidebar.open ~ .content {
   margin-left: 250px;
   width: calc(100% - 250px);
-}
+} */
 
 button {
   margin: 0 10px;
@@ -41,7 +76,8 @@ button {
 }
 
 button:hover {
-  background-color: #b8bfcc;
+  background-color: #007bff;
+  color: white;
   transform: scale(1.05);
 }
 
@@ -53,4 +89,31 @@ button:disabled {
 button.active {
   background-color: #007bff;
   color: white;
+}
+
+/* Light/dark mode button */
+.theme-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.app.light .theme-button:hover {
+  background-color: rgb(45, 64, 118);
+}
+
+.app.dark .theme-button {
+  background-color: #007bff;
+}
+
+.app.dark .theme-button:hover {
+  background-color: white;
+  color:black
 }
