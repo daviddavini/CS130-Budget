@@ -1,5 +1,3 @@
-import {Input} from 'antd'
-
 const Login = () => {
     return (
         <div>
