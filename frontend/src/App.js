@@ -3,9 +3,13 @@ import { ConfigProvider, Button, theme as antdTheme } from 'antd';
 import './App.css';
 import Navbar from './Navbar';
 import Views from './Routes';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // ThemeContext to manage the current theme state globally
 export const ThemeContext = React.createContext(null);
+
+// NOTE: This is okay to leave in version control because it's not a secret
+const CLIENT_ID = "615160098054-au18806m6vc79vc41p4ns0u1824iiplq.apps.googleusercontent.com";
 
 const App = () => {
     const [theme, setTheme] = useState("dark");
@@ -22,17 +26,18 @@ const App = () => {
     }, [theme]);
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-            <ConfigProvider
-                theme={{
-                    algorithm: theme === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
-                }}
-            >
-                <div className={`app ${theme}`}>
-                    <Navbar />
-                    <div className="content">
-                        <Views />
-                    </div>
+        <GoogleOAuthProvider clientId={CLIENT_ID}>
+            <ThemeContext.Provider value={{ theme, toggleTheme }}>
+                <ConfigProvider
+                    theme={{
+                        algorithm: theme === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+                    }}
+                >
+                    <div className={`app ${theme}`}>
+                        <Navbar />
+                        <div className="content">
+                            <Views />
+                        </div>
 
                     {/* Dark/light theme button */}
                     <Button
@@ -43,8 +48,9 @@ const App = () => {
                         Switch to {theme === "dark" ? 'Light' : 'Dark'} Mode
                     </Button> 
                 </div>
-            </ConfigProvider>
-        </ThemeContext.Provider>
+                </ConfigProvider>
+            </ThemeContext.Provider>
+        </GoogleOAuthProvider>
     );
 };
 
