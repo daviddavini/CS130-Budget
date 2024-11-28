@@ -21,22 +21,30 @@ class ReceiptHandler:
     # response is json format
     def parse_ocr_output(self, response):
         res = {}
-        lines = response['ParsedResults'][0]['TextOverlay']['Lines']
-        for line in lines:
-            line_text = line['LineText']
-            for w in line['Words']:
-                word = w['WordText']
-                if any(fuzz.ratio(word.upper(), keyword) >= 80 for keyword in self.subtotal_keywords) and res.get('Subtotal', -1) == -1:
+        try:
+            lines = response['ParsedResults'][0]['TextOverlay']['Lines']
+            for line in lines:
+                line_text = line['LineText']
+                for w in line['Words']:
+                    word = w['WordText']
                     top = w['Top']
-                    value = self.find_value(top, lines)
-                    res['Subtotal'] = value
-                if any(fuzz.ratio(word.upper(), keyword) >= 80 for keyword in self.total_keywords) and res.get('Total', -1) == -1:
-                    top = w['Top']
-                    value = self.find_value(top, lines)
-                    res['Total'] = value
-            if 'Subtotal' in res.keys() and 'Total' in res.keys():
-                break;
-        return res
+                    if any(fuzz.ratio(word.upper(), keyword) >= 80 for keyword in self.subtotal_keywords) and res.get('Subtotal', -1) == -1:
+                        value = self.find_value(top, lines)
+                        res['Subtotal'] = value
+                    elif any(fuzz.ratio(word.upper(), keyword) >= 80 for keyword in self.total_keywords) and res.get('Total', -1) == -1:
+                        value = self.find_value(top, lines)
+                        res['Total'] = value
+                    elif self.is_item(line_text):
+                        value = self.find_value(top, lines)
+                        if value != -1.0:
+                            res[line_text] = value
+                            break
+                if 'Subtotal' in res.keys() and 'Total' in res.keys():
+                    break;
+            return res
+        except Exception as e:
+            print(response)
+            print(e)
 
     def find_value(self, top, lines):
         for line in lines:
@@ -47,16 +55,26 @@ class ReceiptHandler:
                 text = word['WordText']
                 if self.is_money_value(text):
                     return float(text)
-        return 0.0
-                
+        return -1.0
+
+    def is_item(self, text):
+        text = text.strip()
+
+        total_count = len(text)
+        if total_count == 0:
+            return False
+
+        alphabetic_count = sum(1 for char in text if char.isalpha())
+
+        return alphabetic_count > (1.0 / 4) * total_count
         
 
     def modify_receipt(self, details):
         pass
     
     def is_money_value(self, string):
-        # Remove leading and trailing whitespace
-        string = string.strip()
+        # Remove leading and trailing whitespace, $, and , signs
+        string = string.strip().replace('$', '').replace(',', '')
     
         # Check if the string is empty after stripping
         if not string:
