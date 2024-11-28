@@ -66,9 +66,11 @@ const Signup = () => {
                     <Input.Password />
                 </Form.Item>
                 <Form.Item>
+                    <Link to="/budgetplan">
                     <Button type="primary" htmlType="submit" block>
                         Start Saving!
                     </Button>
+                    </Link>
                     <Link to="/login">
                         <Button type="default" htmlType='button' style={{marginTop: '15px'}}>
                             ← Back

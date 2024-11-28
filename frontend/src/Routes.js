@@ -5,6 +5,8 @@ import LocationSearch from './LocationSearch';
 import LogSpending from './LogSpending';
 import Login from './Login';
 import Signup from './Signup';
+import BudgetPlan from './BudgetPlan';
+import ConfirmBudgetPlan from './ConfirmBudgetPlan';
 
 const Views = () => {
     return (
@@ -14,6 +16,8 @@ const Views = () => {
             <Route path="/log" element={<LogSpending />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/budgetplan" element={<BudgetPlan />} />
+            <Route path="/confirmplan" element={<ConfirmBudgetPlan />} />
             <Route path="*" element={<Login />} />
         </Routes>
     );
