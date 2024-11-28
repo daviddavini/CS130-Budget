@@ -27,6 +27,7 @@ const Login = () => {
         <div className={`login-block ${theme}`} style={{ padding: '50px', maxWidth: '600px', margin: 'auto' }}>
             <img
                 src={piggy}
+                alt=""
                 className="login-piggy"
             />
             <Title level={1} style={{ textAlign: 'center' }}>Clever Cash Login</Title>

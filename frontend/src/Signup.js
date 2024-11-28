@@ -22,6 +22,7 @@ const Signup = () => {
         <div className={`signup-block ${theme}`} style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
             <img
                 src={piggy}
+                alt=""
                 className="signup-piggy"
             />
             <Title level={1} style={{ textAlign: 'center' }}>Sign Up</Title>
