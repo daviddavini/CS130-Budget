@@ -4,6 +4,8 @@ from django.conf import settings
 from .externalapis.overpass import nearby_stores 
 from myapp.handlers.receipt_handler import ReceiptHandler
 from .serializers import GoalSerializer
+from .categorizer import Categorizer
+from .models import SpendingType
 
 @api_view(['GET'])
 def sample_api(request):
@@ -26,7 +28,17 @@ def receipt_scanning(request):
     image = request.FILES['image']
     
     receipt_handler = ReceiptHandler(settings.OCR_API_KEY)
-    return Response(receipt_handler.scan_receipt(image))
+    result = receipt_handler.scan_receipt(image)
+    categorizer = Categorizer()
+    grouped_res = {}
+    for key, val in result.items():
+        if key != 'Total' and key != 'Subtotal' and key != 'TAX':
+            print(key, val)
+            category = categorizer.categorize_item(key)
+            grouped_res[category] = round(grouped_res.get(category, 0.0) + val, 2)
+            print(grouped_res)
+    
+    return Response(grouped_res)
 
 @api_view(['POST'])
 def add_goal(request):
