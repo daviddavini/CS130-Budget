@@ -1,12 +1,12 @@
-import LocationSearch from './LocationSearch';
-import React, { useState, useContext } from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './Navbar';
+import { ConfigProvider, Button, theme as antdTheme } from 'antd';
+import './App.css';
 import Home from './Home';
+import Navbar from './Navbar';
+import LocationSearch from './LocationSearch';
 import LogSpending from './LogSpending';
 import Login from './Login';
-import { ConfigProvider, Button, Layout, Typography, theme as antdTheme } from 'antd';
 
 // ThemeContext to manage the current theme state globally
 export const ThemeContext = React.createContext(null);
@@ -19,6 +19,12 @@ const App = () => {
         setTheme(curr => (curr === "light" ? "dark" : "light"));
     };
 
+    // Apply theme to the entire page 
+    // (can use document.documentElement.className as well, but this is smoother)
+    useEffect(() => {
+        document.body.className = theme;
+    }, [theme]);
+
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
             <ConfigProvider
@@ -26,7 +32,7 @@ const App = () => {
                     algorithm: theme === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
                 }}
             >
-                <div className={`app ${theme}`} id={theme}>
+                <div className={`app ${theme}`}>
                     <Router>
                         <Navbar />
                         <div className="content">
