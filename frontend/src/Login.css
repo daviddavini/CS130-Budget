@@ -1,0 +1,28 @@
+.app.light .login-block, .app.light .signup-block {
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.app.dark .login-block, .app.dark .signup-block {
+    background-color: rgb(20, 20, 69);
+    color: white;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-piggy, .signup-piggy {
+    display: block;
+    margin: auto;
+    max-width: 40%;
+}
+
+.login-and-signup {
+    display: flex;
+    justify-content: space-between; /* Ensures spacing between the buttons */
+    align-items: center;
+    gap: 10px;
+}

@@ -68,7 +68,7 @@ h1 {
 
 /*******************Button*******************/
 button {
-  margin: 0 10px;
+  margin: auto;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;

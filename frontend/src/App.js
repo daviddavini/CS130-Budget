@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
 import { ConfigProvider, Button, theme as antdTheme } from 'antd';
 import './App.css';
 import Navbar from './Navbar';
@@ -34,7 +33,7 @@ const App = () => {
                     <div className="content">
                         <Views />
                     </div>
-                    
+
                     {/* Dark/light theme button */}
                     <Button
                         type="primary"

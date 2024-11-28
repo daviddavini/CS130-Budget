@@ -4,6 +4,7 @@ import Home from './Home';
 import LocationSearch from './LocationSearch';
 import LogSpending from './LogSpending';
 import Login from './Login';
+import Signup from './Signup';
 
 const Views = () => {
     return (
@@ -12,6 +13,7 @@ const Views = () => {
             <Route path="/shops" element={<LocationSearch />} />
             <Route path="/log" element={<LogSpending />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<Login />} />
         </Routes>
     );
