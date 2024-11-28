@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Form, Input, Button, Typography, notification } from 'antd';
 import { useContext } from 'react';
 import { ThemeContext } from './App'; // Assuming ThemeContext is already set up
@@ -25,33 +26,33 @@ const Signup = () => {
                 alt=""
                 className="signup-piggy"
             />
-            <Title level={1} style={{ textAlign: 'center' }}>Sign Up</Title>
+            <Title level={2} style={{ textAlign: 'center' }}>Welcome to Clever Cash!</Title>
             <Form
                 //name="signup_form"
                 //onFinish={onFinish}
                 layout="vertical"
             >
                 <Form.Item
-                    label="Email/Username:"
+                    label="Enter your email or create a username:"
                     name="username"
                     rules={[{ required: true, message: 'Email/Username cannot be empty.' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Password:"
+                    label="Create password:"
                     name="password"
                     rules={[{ required: true, message: 'Password cannot be empty.' }]}
                 >
                     <Input.Password />
                 </Form.Item>
                 <Form.Item
-                    label="Confirm Password:"
+                    label="Confirm password:"
                     name="confirm"
                     dependencies={['password']}
                     hasFeedback
                     rules={[
-                        { required: true, message: 'Please confirm your password!' },
+                        { required: true, message: 'Passwords don\'t match or field is empty.' },
                         ({ getFieldValue }) => ({
                             validator(_, value) {
                                 if (!value || getFieldValue('password') === value) {
@@ -68,6 +69,11 @@ const Signup = () => {
                     <Button type="primary" htmlType="submit" block>
                         Start Saving!
                     </Button>
+                    <Link to="/login">
+                        <Button type="default" htmlType='button' style={{marginTop: '15px'}}>
+                            ← Back
+                        </Button>
+                    </Link>
                 </Form.Item>
             </Form>
         </div>
