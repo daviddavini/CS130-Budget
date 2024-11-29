@@ -76,14 +76,15 @@ const Login = () => {
                             </Link>
                         </div>
                     </Form.Item>
-                </Form>
-                <Divider>OR</Divider>
-                <div className="login-option">
+                
+                    <Divider>OR</Divider>
+
                     <Title level={2}>Sign in with Google</Title>
+
                     <Form.Item>
                         <GoogleLoginButton />
                     </Form.Item>
-                </div>
+                </Form>
             </div>
         </div>
     );

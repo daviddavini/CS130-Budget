@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Input, Button, Typography, notification } from 'antd';
 import { useContext } from 'react';
-import { ThemeContext } from './App'; // Assuming ThemeContext is already set up
+import { ThemeContext } from './App';
 import piggy from './assets/Piggy.png';
 import './Login.css';
 

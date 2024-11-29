@@ -17,16 +17,19 @@
     width: 250px;
 }
 
+/* Unordered List */
 .sidebar ul {
     list-style: none;
     padding: 0;
     margin: 0;
     width: 100%;
+    max-width: 250px;
     text-align: center;
 }
 
 .sidebar ul li {
-    margin: 20px 0;
+    margin: 20px auto; /* Adds top/bottom padding b/w list elements. */
+    width: 100%;
 }
 
 .sidebar ul li a {
@@ -35,12 +38,14 @@
     display: block;
     padding: 10px;
     width: 100%;
+    max-width: 250px;
     transition: background-color 0.3s ease, color 0.3s ease;
+    box-sizing: border-box;
 }
 
-/* Adjust position when sidebar is open */
+/* Position of hamburger menu when sidebar is open */
 .sidebar.open ~ .hamburger-menu {
-    left: 270px; /* Sidebar width (250px) + 20px padding */
+    left: 270px;
 }
 
   /* Dark Theme */
@@ -80,13 +85,16 @@
     height: 50px;
     position: fixed;
     z-index: 2;
+    display: flex;
     background-color: transparent;
     color: black;
     transition: left 0.3s ease;
-    left: 20px; /* Adjusted to align with content margin */
+    left: 20px;
     top: 20px;
     border-radius: 8px;
     user-select: none;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Dark Theme */
