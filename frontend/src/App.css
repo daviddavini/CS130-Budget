@@ -45,7 +45,6 @@ h1 {
   padding: 20px;
   font-family: Arial, sans-serif;
   border-radius: 40px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: inherit;
   color: inherit;
   transition: margin-left 0.3s ease, width 0.3s ease, background-color 0.3s ease;
@@ -53,11 +52,13 @@ h1 {
 
 .app.dark .content {
   background-color: rgb(45, 64, 118);
+  box-shadow: 0px 0px 5px 2px rgba(255, 255, 255, 0.5);
   color: white;
 }
 
 .app.light .content {
   background-color: ghostwhite;
+  box-shadow: 0px 0px 5px 2px lavender;
   color: black;
 }
 
@@ -127,21 +128,25 @@ button:disabled {
 /* Dark Mode Theme Button */
 .app.dark .theme-button {
   background-color: rgb(45, 64, 118);
+  box-shadow: 0px 0px 5px 2px rgba(255, 255, 255, 0.5);
   color: white;
 }
 
 .app.dark .theme-button:hover {
   background-color: white;
+  box-shadow: 0px 0px 5px 2px lavender;
   color:black
 }
 
 /* Light Mode Theme Button */
 .app.light .theme-button {
   background-color: ghostwhite;
+  box-shadow: 0px 0px 5px 2px lavender;
   color: black;
 }
 
 .app.light .theme-button:hover {
   background-color: rgb(45, 64, 118);
+  box-shadow: 0px 0px 5px 2px rgba(255, 255, 255, 0.5);
   color: white;
 }

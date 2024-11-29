@@ -30,7 +30,9 @@ const ConfirmBudgetPlan = () => {
         </Form.Item>
       </Form>
       <Link to="/budgetplan" style={{ color: theme.primaryColor }}>
-        Back to Budget Plans
+        <Button type="link" htmlType="button">
+          Back to Budget Plans
+        </Button>
       </Link>
     </div>
   );
