@@ -1,0 +1,11 @@
+.google-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .google-login-container.light {
+  }
+  
+  .google-login-container.dark {
+  }

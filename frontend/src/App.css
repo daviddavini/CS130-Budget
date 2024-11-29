@@ -1,10 +1,12 @@
-.App {
-  text-align: center;
-}
-
-.app {
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  background-color: inherit;
+  color: inherit;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1 {
@@ -12,26 +14,61 @@ h1 {
   margin-bottom: 20px;
 }
 
+/*******************Themes*******************/
+/* Dark Mode Colors */
+.dark {
+  background-color: rgb(20, 20, 69); /* Background */
+  color: white; /* Text */
+}
+
+/* Light Mode Colors */
+.light {
+  background-color:white;
+  color: black;
+}
+
+/*******************App*******************/
+.app {
+  text-align: center;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: inherit;
+}
+
+/*******************Content*******************/
 .content {
   flex-grow: 1;
-  margin: 0 auto;
+  margin: auto;
   margin-top: 60px;
   padding: 20px;
-  /* margin-top: 60px; */
   font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
   border-radius: 40px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: margin-left 0.3s ease, width 0.3s ease;
+  background-color: inherit;
+  color: inherit;
+  transition: margin-left 0.3s ease, width 0.3s ease, background-color 0.3s ease;
 }
 
-.sidebar.open ~ .content {
+.app.dark .content {
+  background-color: rgb(45, 64, 118);
+  color: white;
+}
+
+.app.light .content {
+  background-color: ghostwhite;
+  color: black;
+}
+
+/* .sidebar.open ~ .content {
   margin-left: 250px;
   width: calc(100% - 250px);
-}
+} */
 
+/*******************Button*******************/
 button {
-  margin: 0 10px;
+  margin: auto;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -40,17 +77,66 @@ button {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button:hover {
-  background-color: #b8bfcc;
-  transform: scale(1.05);
-}
-
 button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
 }
 
-button.active {
+/* Light Mode Regular Button */
+.app.light button:hover {
+  background-color: lavender;
+  color: black;
+  transform: scale(1.05);
+}
+
+.app.light button.active {
   background-color: #007bff;
+  color: white;
+}
+
+/* Dark Mode Regular Button */
+.app.dark button:hover {
+  background-color: rgb(30, 40, 80);
+  color: white;
+  transform: scale(1.05);
+}
+
+.app.dark button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/*******************Theme Button*******************/
+.theme-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Dark Mode Theme Button */
+.app.dark .theme-button {
+  background-color: rgb(45, 64, 118);
+  color: white;
+}
+
+.app.dark .theme-button:hover {
+  background-color: white;
+  color:black
+}
+
+/* Light Mode Theme Button */
+.app.light .theme-button {
+  background-color: ghostwhite;
+  color: black;
+}
+
+.app.light .theme-button:hover {
+  background-color: rgb(45, 64, 118);
   color: white;
 }

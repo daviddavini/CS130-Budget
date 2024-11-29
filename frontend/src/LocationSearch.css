@@ -8,11 +8,11 @@
     scroll-behavior: smooth;
 }
 
-.location-search h1 {
+/* .location-search h1 {
     font-size: 28px;
     color: #333;
     margin-bottom: 20px;
-}
+} */
 
 .error-message {
     color: red;

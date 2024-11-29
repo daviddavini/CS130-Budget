@@ -16,7 +16,12 @@
     margin-bottom: 5px;
     display: flex;
     flex-direction: column;
-    color: #333;
+    color: black;
+}
+
+/* Change label text color when app is in dark mode */
+.app.dark .log-spending label {
+    color: white;
 }
 
 .log-spending input[type="text"],
@@ -40,6 +45,12 @@
     cursor: pointer;
 }
 
-.submit-button:hover {
-    background-color: #0056b3;
+.app.dark .submit-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.app.light .submit-button:hover {
+    background-color: #007bff;
+    color: white;
 }
