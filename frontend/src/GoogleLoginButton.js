@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { ThemeContext } from './App'; 
+import { useNavigate } from 'react-router-dom';
 import './GoogleLoginButton.css';
 import './Login.css'; 
 function GoogleLoginButton() {
   const { theme } = useContext(ThemeContext); 
-
+  const navigate = useNavigate();
   const handleSuccess = (credentialResponse) => {
     console.log('Login Success:', credentialResponse);
 
@@ -14,11 +15,18 @@ function GoogleLoginButton() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: credentialResponse.credential }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Google-Auth Response Error');
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log('Backend response:', data);
         if (data.token) {
           localStorage.setItem('token', data.token);
+          console.log('Navigating to home page');
+          navigate('/');
         } else if (data.error) {
           console.error('Authentication error:', data.error);
         }
