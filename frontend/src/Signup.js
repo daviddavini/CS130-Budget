@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Typography, notification } from 'antd';
 import { useContext } from 'react';
 import { ThemeContext } from './App';
@@ -10,14 +10,16 @@ const { Title } = Typography;
 
 const Signup = () => {
     const { theme } = useContext(ThemeContext);
+    const navigate = useNavigate();
 
-   /*  const onFinish = (values) => {
+    const onFinish = (values) => {
         console.log('Sign-Up Data:', values);
         notification.success({
             message: 'Account Created',
             description: `Welcome, ${values.username}! Your account has been successfully created.`,
         });
-    }; */
+        navigate('/budgetplan');
+    };
 
     return (
         <div className={`signup-block ${theme}`} style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
@@ -28,8 +30,8 @@ const Signup = () => {
             />
             <Title level={2} style={{ textAlign: 'center' }}>Welcome to Clever Cash!</Title>
             <Form
-                //name="signup_form"
-                //onFinish={onFinish}
+                name="signup_form"
+                onFinish={onFinish}
                 layout="vertical"
             >
                 <Form.Item
@@ -66,11 +68,9 @@ const Signup = () => {
                     <Input.Password />
                 </Form.Item>
                 <Form.Item>
-                    <Link to="/budgetplan">
                     <Button type="primary" htmlType="submit" block>
                         Start Saving!
                     </Button>
-                    </Link>
                     <Link to="/login">
                         <Button type="default" htmlType='button' style={{marginTop: '15px'}}>
                             ← Back
