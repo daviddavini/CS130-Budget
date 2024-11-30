@@ -16,6 +16,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from django.utils import timezone
+from datetime import datetime
+
 
 @api_view(['GET'])
 def sample_api(request):
@@ -156,3 +158,28 @@ def google_auth(request):
     except ValueError:
         # Invalid token
         return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_visualization(request):
+    user = request.user
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    start_date = timezone.make_aware(datetime.strptime(start, '%Y-%m-%d'), timezone.get_current_timezone())
+    end_date = timezone.make_aware(datetime.strptime(end, '%Y-%m-%d'), timezone.get_current_timezone())
+    
+    transactions = Transaction.objects.filter(user=user)
+    print("All user transactions", transactions)
+    transactions = transactions.filter(date__range=(start_date, end_date))
+
+    summary = {}
+    for transaction in transactions:
+        summary[transaction.spending_type] = summary.get(transaction.spending_type, 0) + transaction.amount
+    print(summary)
+    return Response({'summary': summary, 'error': 'None'})
+        
+    # TODO: use summary to get visualization graphs
+    # might be front end task
+    
+    

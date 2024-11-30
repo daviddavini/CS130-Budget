@@ -28,6 +28,8 @@ class Transaction(models.Model):
         choices=SpendingType.choices,
         default=SpendingType.Misc
         )
+    def __str__(self):
+        return f"{self.user.username} - {self.amount} - {self.date} - {self.spending_type}"
     
 class Goal(models.Model):
     user = models.CharField(max_length=30)
