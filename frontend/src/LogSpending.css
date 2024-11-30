@@ -54,3 +54,16 @@
     background-color: #007bff;
     color: white;
 }
+
+.submit-button:disabled {
+    background-color: #004bcf;
+    color: white;
+}
+
+.app.dark .error {
+    color: white;
+}
+
+.app.light .error {
+    color: black;
+}

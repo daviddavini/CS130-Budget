@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class SpendingType(models.TextChoices):
@@ -11,7 +12,7 @@ class SpendingType(models.TextChoices):
     Education = "Education"
     Entertainment = "Entertainment"
     Clothing = "Clothing"
-    PersonalCare = "PersonalCare"
+    PersonalCare = "Personal Care"
     Pet = "Pet"
     Travel = "Travel"
     Gifting = "Gifting"
@@ -19,10 +20,9 @@ class SpendingType(models.TextChoices):
 
 # Create your models here.
 class Transaction(models.Model):
-    user = models.CharField(max_length=30)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=255)
+    date = models.DateTimeField()
     spending_type = models.CharField(
         max_length=15,
         choices=SpendingType.choices,

@@ -10,6 +10,8 @@ const LogSpending = () => {
     date: '',
   });
   const [receipt, setReceipt] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,43 +23,90 @@ const LogSpending = () => {
     setReceipt(file);
   };
 
+  const handleManualInputClick = () => {
+    setIsManual(true);
+    setError(null); // Reset error when switching to manual input
+  };
+
+  const handleUploadReceiptClick = () => {
+    setIsManual(false);
+    setError(null); // Reset error when switching to upload receipt
+  };
+
   const handleSubmit = async (e) => {
+    const token = localStorage.getItem('token');
+    setLoading(true); // Set loading to true
+    setError(null); // Reset any previous errors  
     e.preventDefault();
     if (isManual) {
-      console.log('Manual Entry:', formData);
+	const amount = formData.amount;
+	const category = formData.category;
+	const date = formData.date;
+	try {
+	    const response = await fetch(`http://localhost:8000/api/manual-input/?amount=${amount}&category=${category}&date=${date}`, {
+		method: 'GET',
+		headers: {
+		    'Authorization': `Token ${token}`,
+		}
+	    });
+	    if (!response.ok) {
+		const errorData = await response.json(); // Get error data from response
+                throw new Error(errorData.error || 'An unknown error occurred');
+            }
+
+	    const data = await response.json();
+	    console.log('Manual Entry:', formData);
+	    console.log('Response: ', data);
+	    
+	    setError(null); // Set error message
+	} catch(error) {
+	    console.error('Error during manual entry:', error);
+	    setError(error.message); // Set error message
+	}
     } else if (receipt) {
         const form = new FormData();
-	form.append('image', receipt); // Use 'receipt' as the key
-
+	form.append('image', receipt); // Use 'image' as the key
+	
 	try {
             const response = await fetch('http://localhost:8000/api/scan/', {
 		method: 'POST',
+		headers: {
+		    'Authorization': `Token ${token}`
+		}, 
 		body: form,
             });
-
+	    if (!response.ok) {
+		const errorData = await response.json(); // Get error data from response
+                throw new Error(errorData.error || 'An unknown error occurred');
+            }
 	    const result = await response.json();
 	    console.log('OCR Result:', result);
+	    setError(null);
 	} catch (error) {
-            console.error('Error:', error);
+            console.error('Error during receipt handling:', error);
+	    setError(error.message); // Set error message
 	}
 	console.log('Uploaded Receipt:', receipt.name);
     }
     setFormData({ description: '', amount: '', category: '', date: '' });
     setReceipt(null);
+    setLoading(false);
   };
 
   return (
     <div className="log-spending">
       <h1>Log Spending</h1>
       <div className="options">
-        <button onClick={() => setIsManual(true)} className={isManual ? 'active' : ''}>
+          <button onClick={handleManualInputClick} className={isManual ? 'active' : ''}>
           Input Manually
         </button>
-        <button onClick={() => setIsManual(false)} className={!isManual ? 'active' : ''}>
+        <button onClick={handleUploadReceiptClick} className={!isManual ? 'active' : ''}>
           Upload Receipt
         </button>
       </div>
       <form onSubmit={handleSubmit}>
+	{loading && <p>Loading...</p>} {/* Loading indicator */}
+        {error && <p className="error">{error}</p>} {/* Error message */}
         {isManual ? (
           <div className="manual-input">
             <label>
@@ -110,9 +159,10 @@ const LogSpending = () => {
             {receipt && <p>Uploaded: {receipt.name}</p>}
           </div>
         )}
-        <button type="submit" className="submit-button">
+          <button type="submit" className="submit-button" disabled={loading}>
           Submit
         </button>
+	
       </form>
     </div>
   );

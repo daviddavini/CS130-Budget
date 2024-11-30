@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import sample_api, receipt_scanning, add_goal, list_goals, remove_goal, google_auth
+from .views import sample_api, receipt_scanning, add_goal, list_goals, remove_goal, google_auth, manual_input
 
 urlpatterns = [
     path('sample/', sample_api),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('remove/', remove_goal),
     path('list/', list_goals),
     path('google-auth/', google_auth),
+    path('manual-input/', manual_input),
 ]

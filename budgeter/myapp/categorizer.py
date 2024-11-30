@@ -31,7 +31,7 @@ class Categorizer():
                 response_schema={
                     "type": "STRING",
                     "enum": ["Housing", "Transportation", "Food", "Utilities", "Medical", "Insurance", "Education", 
-                             "Entertainment", "Clothing", "PersonalCare", "Pet", "Travel", "Gifting", "Misc"],
+                             "Entertainment", "Clothing", "Personal Care", "Pet", "Travel", "Gifting", "Misc"],
                 },
             ),
         )
