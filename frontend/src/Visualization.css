@@ -1,0 +1,64 @@
+
+.submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.app.dark .submit-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.app.light .submit-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.submit-button:disabled {
+    background-color: #004bcf;
+    color: white;
+}
+
+.app.dark .error {
+    color: white;
+}
+
+.app.light .error {
+    color: black;
+}
+
+.table-summary {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.app.light tr:hover {
+    background-color: #999;
+    color: white;
+}
+
+.app.dark tr:hover {
+    background-color: #eee;
+    color: black;
+}
+
+.app.light axis-label {
+    color: black;
+}
+
+.app.dark axis-label {
+    color: white;
+}
