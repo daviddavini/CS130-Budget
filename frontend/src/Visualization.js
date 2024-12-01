@@ -12,10 +12,22 @@ const Visualization = ({ startDate, endDate }) => {
     });
     const [loaded, setLoaded] = useState(false);
     const [expense, setExpense] = useState(null);
+    const [selected, setSelected] = useState({
+	table: true,
+	pieChart: true,
+	barChart: true
+    });
 
     const handleInputChange = (e) => {
 	const { name, value } = e.target;
 	setFormData({ ...formData, [name]: value });
+    };
+
+    const handleCheckboxChange = (e) => {
+	setSelected({
+	    ...selected,
+	    [e.target.name]: e.target.checked
+	});
     };
 
     const handleSubmit = async (e) => {
@@ -82,30 +94,60 @@ const Visualization = ({ startDate, endDate }) => {
 			/>
 		    </label>
 		</div>
-		
+		<div className='visual-options'>
+		    <label>
+			<input
+			    type="checkbox"
+			    name="table"
+			    checked={selected.table}
+			    onChange={handleCheckboxChange}
+			/>
+			Table
+		    </label>
+		    <label>
+			<input
+			    type="checkbox"
+			    name="pieChart"
+			    checked={selected.pieChart}
+			    onChange={handleCheckboxChange}
+			/>
+			Pie Chart
+		    </label>
+		    <label>
+			<input
+			    type="checkbox"
+			    name="barChart"
+			    checked={selected.barChart}
+			    onChange={handleCheckboxChange}
+			/>
+			Bar Chart
+		    </label>
+		</div>
 		<button type="submit" className="submit-button" disabled={loading}>
 		    Submit
 		</button>
 		{loaded &&
 		 <>
-		     <table className="table-summary">
-			 <thead>
-			     <tr>
-				 <th>Category</th>
-				 <th>Amount</th>
-			     </tr>
-			 </thead>
-			 <tbody>
-			     {Object.entries(expense).map(([category, amount]) => (
-				 <tr key={category}>
-				     <td>{category}</td>
-				     <td>${amount.toFixed(2)}</td>
+		     {selected.table &&
+			 <table className="table-summary">
+			     <thead>
+				 <tr>
+				     <th>Category</th>
+				     <th>Amount</th>
 				 </tr>
-			     ))}
-			 </tbody>
-		     </table>
-		     <ExpensePieChart data={expense}/>
-		     <ExpenseBarChart data={expense}/>
+			     </thead>
+			     <tbody>
+				 {Object.entries(expense).map(([category, amount]) => (
+				     <tr key={category}>
+					 <td>{category}</td>
+					 <td>${amount.toFixed(2)}</td>
+				     </tr>
+				 ))}
+			     </tbody>
+			 </table>
+		     }
+		     {selected.pieChart && <ExpensePieChart data={expense}/>}
+		     {selected.barChart && <ExpenseBarChart data={expense}/>}
 		 </>
 		}
 		
