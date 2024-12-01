@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-h&f2tsj%j41q=#6kpo+ai@qk$ynk_(n%@)#ie(i$)-g6lc27ol
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.clevercash.pro']
 
 
 # Application definition
