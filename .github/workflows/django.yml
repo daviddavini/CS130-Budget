@@ -28,6 +28,7 @@ jobs:
     - name: Run Tests
       env:
         OCR_API_KEY: ${{ secrets.OCR_API_KEY }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       working-directory: ./budgeter
       run: |
         python manage.py test
