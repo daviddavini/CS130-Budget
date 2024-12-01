@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Visualization.css';
 import ExpensePieChart from './PieChart' ;
 import ExpenseBarChart from './BarChart' ;
+import ExpenseLineChart from './LineChart' ;
 
 const Visualization = ({ startDate, endDate }) => {
     const [error, setError] = useState(null);
@@ -12,10 +13,12 @@ const Visualization = ({ startDate, endDate }) => {
     });
     const [loaded, setLoaded] = useState(false);
     const [expense, setExpense] = useState(null);
+    const [dateExpenses, setDateExpenses] = useState(null);
     const [selected, setSelected] = useState({
 	table: true,
 	pieChart: true,
-	barChart: true
+	barChart: true,
+	lineChart: true
     });
 
     const handleInputChange = (e) => {
@@ -35,13 +38,19 @@ const Visualization = ({ startDate, endDate }) => {
 	setError(null);
 	e.preventDefault();
 	console.log("Hello");
-	const startDate = formData.startDate;
-	const endDate = formData.endDate;
+	const startDate = new Date(formData.startDate);
+	startDate.setHours(0, 0, 0, 0);
+	startDate.setDate(startDate.getDate() + 1);
+	const endDate = new Date(formData.endDate);
+	endDate.setHours(16, 0, 0, 0);
+	const nextDate = new Date(endDate);
+	nextDate.setDate(endDate.getDate() + 2);
+	console.log(startDate, nextDate);
         try {
 	    if (localStorage.getItem('token') === null) {
 		throw new Error("You have not logged in yet!");
 	    }
-            const response = await fetch(`/api/visualize/?start=${startDate}&end=${endDate}`, {
+            const response = await fetch(`/api/visualize/?start=${startDate.toISOString().split('T')[0]}&end=${nextDate.toISOString().split('T')[0]}`, {
 		method: 'GET',
                 headers: {
                     Authorization: `Token ${localStorage.getItem('token')}`,
@@ -59,10 +68,12 @@ const Visualization = ({ startDate, endDate }) => {
 	    setError(null);
 	    setLoaded(true);
 	    setExpense(result.summary);
+	    setDateExpenses(result.date_summary);
         } catch (error) {
             setError(error.message);
 	    setLoaded(false);
 	    setExpense(null);
+	    setDateExpenses(null);
         } finally {
             setLoading(false);
 	    setFormData({ startDate: "", endDate: "" });
@@ -132,6 +143,15 @@ const Visualization = ({ startDate, endDate }) => {
 		    />
 		    Bar Chart
 		</label>
+		<label>
+		    <input
+			type="checkbox"
+			name="lineChart"
+			checked={selected.lineChart}
+			onChange={handleCheckboxChange}
+		    />
+		    Line Chart
+		</label>
 	    </div>
 	    {loaded &&
 	     <>
@@ -155,6 +175,7 @@ const Visualization = ({ startDate, endDate }) => {
 		 }
 		 {selected.pieChart && <ExpensePieChart data={expense}/>}
 		 {selected.barChart && <ExpenseBarChart data={expense}/>}
+		 {selected.lineChart && <ExpenseLineChart data={dateExpenses}/>}
 	     </>
 	    }
 	    
