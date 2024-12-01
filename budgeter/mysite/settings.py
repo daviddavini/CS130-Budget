@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-h&f2tsj%j41q=#6kpo+ai@qk$ynk_(n%@)#ie(i$)-g6lc27ol
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.clevercash.pro']
 
 
 # Application definition
@@ -80,7 +80,7 @@ REST_FRAMEWORK = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'build')],
+        'DIRS': [os.path.join(BASE_DIR, '..', 'frontend', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
