@@ -15,6 +15,9 @@ const Home = () => {
     const fetchExpenses = async () => {
 	setError(null);
 	try {
+	    if (localStorage.getItem('token') === null) {
+		throw new Error('You have not logged in yet!');
+	    }
 	    const currentDate = new Date();
 	    const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 	    currentMonthStart.setHours(0, 0, 0, 0);
