@@ -43,6 +43,9 @@ const LogSpending = () => {
 	const category = formData.category;
 	const date = formData.date;
 	try {
+	    if (token === null) {
+		throw new Error("You have not logged in yet!");
+	    }
 	    const response = await fetch(`http://localhost:8000/api/manual-input/?amount=${amount}&category=${category}&date=${date}`, {
 		method: 'GET',
 		headers: {
@@ -68,6 +71,9 @@ const LogSpending = () => {
 	form.append('image', receipt); // Use 'image' as the key
 	
 	try {
+	    if (token === null) {
+		throw new Error("You have not logged in yet!");
+	    }
             const response = await fetch('http://localhost:8000/api/scan/', {
 		method: 'POST',
 		headers: {

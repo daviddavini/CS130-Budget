@@ -34,9 +34,13 @@ const Visualization = ({ startDate, endDate }) => {
 	setLoading(true);
 	setError(null);
 	e.preventDefault();
+	console.log("Hello");
 	const startDate = formData.startDate;
 	const endDate = formData.endDate;
         try {
+	    if (localStorage.getItem('token') === null) {
+		throw new Error("You have not logged in yet!");
+	    }
             const response = await fetch(`/api/visualize/?start=${startDate}&end=${endDate}`, {
 		method: 'GET',
                 headers: {
@@ -68,8 +72,8 @@ const Visualization = ({ startDate, endDate }) => {
 
     return (
         <div className="visualize">
-            <h2>Transaction Summary</h2>
-            <form onSubmit={handleSubmit}>
+            <h2>Expense Summary</h2>
+            <form onSubmit={handleSubmit} className='form'>
 		{loading && <p>Loading...</p>} {/* Loading indicator */}
 		{error && <p className="error">{error}</p>} {/* Error message */}
 		<div className="date-input">
@@ -94,64 +98,67 @@ const Visualization = ({ startDate, endDate }) => {
 			/>
 		    </label>
 		</div>
-		<div className='visual-options'>
-		    <label>
-			<input
-			    type="checkbox"
-			    name="table"
-			    checked={selected.table}
-			    onChange={handleCheckboxChange}
-			/>
-			Table
-		    </label>
-		    <label>
-			<input
-			    type="checkbox"
-			    name="pieChart"
-			    checked={selected.pieChart}
-			    onChange={handleCheckboxChange}
-			/>
-			Pie Chart
-		    </label>
-		    <label>
-			<input
-			    type="checkbox"
-			    name="barChart"
-			    checked={selected.barChart}
-			    onChange={handleCheckboxChange}
-			/>
-			Bar Chart
-		    </label>
-		</div>
+
+		
 		<button type="submit" className="submit-button" disabled={loading}>
 		    Submit
 		</button>
-		{loaded &&
-		 <>
-		     {selected.table &&
-			 <table className="table-summary">
-			     <thead>
-				 <tr>
-				     <th>Category</th>
-				     <th>Amount</th>
-				 </tr>
-			     </thead>
-			     <tbody>
-				 {Object.entries(expense).map(([category, amount]) => (
-				     <tr key={category}>
-					 <td>{category}</td>
-					 <td>${amount.toFixed(2)}</td>
-				     </tr>
-				 ))}
-			     </tbody>
-			 </table>
-		     }
-		     {selected.pieChart && <ExpensePieChart data={expense}/>}
-		     {selected.barChart && <ExpenseBarChart data={expense}/>}
-		 </>
-		}
-		
 	    </form>
+	    <div className='visual-options'>
+		<label>
+		    <input
+			type="checkbox"
+			name="table"
+			checked={selected.table}
+			onChange={handleCheckboxChange}
+		    />
+		    Table
+		</label>
+		<label>
+		    <input
+			type="checkbox"
+			name="pieChart"
+			checked={selected.pieChart}
+			onChange={handleCheckboxChange}
+		    />
+		    Pie Chart
+		</label>
+		<label>
+		    <input
+			type="checkbox"
+			name="barChart"
+			checked={selected.barChart}
+			onChange={handleCheckboxChange}
+		    />
+		    Bar Chart
+		</label>
+	    </div>
+	    {loaded &&
+	     <>
+		 {selected.table &&
+		  <table className="table-summary">
+		      <thead>
+			  <tr>
+			      <th>Category</th>
+			      <th>Amount</th>
+			  </tr>
+		      </thead>
+		      <tbody>
+			  {Object.entries(expense).map(([category, amount]) => (
+			      <tr key={category}>
+				  <td>{category}</td>
+				  <td>${amount.toFixed(2)}</td>
+			      </tr>
+			  ))}
+		      </tbody>
+		  </table>
+		 }
+		 {selected.pieChart && <ExpensePieChart data={expense}/>}
+		 {selected.barChart && <ExpenseBarChart data={expense}/>}
+	     </>
+	    }
+	    
+	    
         </div>
     );
 };

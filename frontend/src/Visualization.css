@@ -7,7 +7,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    flex-grow: 0;
 }
 
 .app.dark .submit-button:hover {
@@ -61,4 +61,21 @@ th, td {
 
 .app.dark axis-label {
     color: white;
+}
+
+.form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%
+}
+
+.date-input {
+    display: flex;
+}
+
+.pie-chart {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }

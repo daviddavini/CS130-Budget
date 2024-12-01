@@ -174,12 +174,15 @@ def get_visualization(request):
     transactions = transactions.filter(date__range=(start_date, end_date))
 
     summary = {}
+    date_summary = {}
     for transaction in transactions:
+        date_key = transaction.date.strftime('%Y-%m-%d')
+        values = date_summary.get(date_key, {})
+        values[transaction.spending_type] = values.get(transaction.spending_type, 0) + transaction.amount
+        date_summary[date_key] = values
         summary[transaction.spending_type] = summary.get(transaction.spending_type, 0) + transaction.amount
     print(summary)
-    return Response({'summary': summary, 'error': 'None'})
-        
-    # TODO: use summary to get visualization graphs
-    # might be front end task
+    print(date_summary)
+    return Response({'summary': summary, 'date_summary': date_summary, 'error': 'None'})
     
     
