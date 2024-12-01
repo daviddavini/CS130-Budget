@@ -32,7 +32,7 @@ class Transaction(models.Model):
         return f"{self.user.username} - {self.amount} - {self.date} - {self.spending_type}"
     
 class Goal(models.Model):
-    user = models.CharField(max_length=30)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()

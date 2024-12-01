@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from .externalapis.overpass import nearby_stores 
 from myapp.handlers.receipt_handler import ReceiptHandler
-from .serializers import GoalSerializer
+from .serializers import GoalSerializer, SignUpSerializer, LoginSerializer
 from .categorizer import Categorizer
 from .models import SpendingType, Goal, Transaction
 from rest_framework import status
@@ -17,7 +17,46 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from django.utils import timezone
 from datetime import datetime
+import json
 
+@api_view(['POST'])
+def manual_auth(request):
+    decoded = request.body.decode('utf-8')
+    try:
+        data = json.loads(decoded)
+    except json.JSONDecodeError:
+        return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        serializer = SignUpSerializer(data=data)
+        print(serializer)
+        if serializer.is_valid():
+            user = serializer.save()
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def login_view(request):
+    decoded = request.body.decode('utf-8')
+    try:
+        data = json.loads(decoded)
+    except json.JSONDecodeError:
+        return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        serializer = LoginSerializer(data=data)
+        print(serializer)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
 def sample_api(request):
@@ -162,6 +201,8 @@ def google_auth(request):
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

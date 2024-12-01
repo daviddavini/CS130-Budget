@@ -12,13 +12,38 @@ const Signup = () => {
     const { theme } = useContext(ThemeContext);
     const navigate = useNavigate();
 
-    const onFinish = (values) => {
-        console.log('Sign-Up Data:', values);
-        notification.success({
-            message: 'Account Created',
-            description: `Welcome, ${values.username}! Your account has been successfully created.`,
-        });
-        navigate('/budgetplan');
+    const onFinish = async (values) => {
+	const signupData = {
+	    username: values.username,
+	    password: values.password
+	};
+        console.log('Sign-Up Data:', signupData);
+	try {
+	    const response = await fetch('http://localhost:8000/api/signup/', {
+		method: 'POST',
+		headers: {
+		    'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(signupData),
+	    });
+	    if (!response.ok) {
+		throw new Error('Signup Failed');
+	    }
+	    const data = await response.json();
+	    if (data.token) {
+		localStorage.setItem('token', data.token);
+		console.log("token: ", localStorage.getItem('token'))
+	    } else if (data.error) {
+		throw new Error('Authentication error:', data.error);
+	    }
+            notification.success({
+		message: 'Account Created',
+		description: `Welcome, ${values.username}! Your account has been successfully created.`,
+            });
+            navigate('/budgetplan');
+	} catch(error) {
+	    console.error("Error during manual sign up:", error);
+	}
     };
 
     return (

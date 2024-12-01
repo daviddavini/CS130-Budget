@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleLoginButton from './GoogleLoginButton';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Checkbox, Typography, notification, Divider } from 'antd';
 import { useContext } from 'react';
 import { ThemeContext } from './App';
@@ -11,18 +11,44 @@ const { Title } = Typography;
 
 const Login = () => {
     const { theme } = useContext(ThemeContext);  // Access theme from context
-
-    /* // Handle form submission
-    const onFinish = (values) => {
+    const navigate = useNavigate();
+    
+    const onFinish = async (values) => {
+	const signinData = {
+	    username: values.username,
+	    password: values.password
+	}
         // For simplicity, just log the user data
-        console.log('Received values:', values);
+        console.log('Received values:', signinData);
+	try {
+	    const response = await fetch('http://localhost:8000/api/login/', {
+		method: 'POST',
+		headers: {
+		    'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(signinData),
+	    });
+	    if (!response.ok) {
+		throw new Error('Signin Failed');
+	    }
+	    const data = await response.json();
+	    if (data.token) {
+		localStorage.setItem('token', data.token);
+		console.log("token: ", localStorage.getItem('token'))
+	    } else if (data.error) {
+		throw new Error('Authentication error:', data.error);
+	    }
+	    notification.success({
+		message: 'Login Successful',
+		description: `Welcome back, ${values.username}!`,
+	    });
+            navigate('/');
+	} catch(error) {
+	    console.error("Error during sign in:", error);
+	}
 
-        // Here you would typically call an API to authenticate the user
-        notification.success({
-            message: 'Login Successful',
-            description: `Welcome back, ${values.username}!`,
-        });
-    }; */
+        
+    }; 
 
     return (
         <div className={`login-block ${theme}`} style={{ padding: '50px', maxWidth: '600px', margin: 'auto' }}>
@@ -34,8 +60,8 @@ const Login = () => {
             <Title level={1} style={{ textAlign: 'center' }}>Clever Cash Login</Title>
             <div>
                 <Form
-                    //name="login_form"
-                    //onFinish={onFinish}
+                    name="login_form"
+                    onFinish={onFinish}
                     layout="vertical"
                     initialValues={{ remember: true }}
                 >

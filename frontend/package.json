@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8000/",
+  "proxy": "http://127.0.0.1:8000/",
   "dependencies": {
     "@ant-design/charts": "^2.2.3",
     "@ant-design/colors": "^7.1.0",
