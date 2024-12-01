@@ -69,12 +69,12 @@ h1 {
 
 /*******************Button*******************/
 button {
-  margin: auto;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  background-color: white;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -85,6 +85,7 @@ button:disabled {
 
 /* Light Mode Regular Button */
 .app.light button:hover {
+  border: none;
   background-color: lavender;
   color: black;
   transform: scale(1.05);
@@ -92,11 +93,13 @@ button:disabled {
 
 .app.light button.active {
   background-color: #007bff;
+  border: none;
   color: white;
 }
 
 /* Dark Mode Regular Button */
 .app.dark button:hover {
+  border: none;
   background-color: rgb(30, 40, 80);
   color: white;
   transform: scale(1.05);

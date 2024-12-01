@@ -9,11 +9,20 @@
     color: #333;
 }
 
-.loading,
-.error {
-    font-size: 18px;
-    color: #666;
-    text-align: center;
+/* Loading Message + Loading Spinner Alignment */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Loading Spinner Dot Colors */
+.app.light .ant-spin-dot i {
+    background-color: black;
+}
+
+.app.dark .ant-spin-dot i {
+    background-color: white;
 }
 
 .location-list {

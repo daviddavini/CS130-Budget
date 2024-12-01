@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Card, Typography, Spin, Alert, Tag } from 'antd';
+import { ThemeContext } from './App';
 import './LocationResults.css';
 
+const { Title, Paragraph, Text } = Typography;
+
 const LocationItem = ({ name, address, distance, phone, website, opening_hours, brand }) => {
+  const { theme } = useContext(ThemeContext);
   return (
     <div className="location-item">
       <h3>{name}</h3>
@@ -22,6 +27,8 @@ const LocationResults = ({ lat, lon, radius }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { theme } = useContext(ThemeContext);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,7 +37,7 @@ const LocationResults = ({ lat, lon, radius }) => {
           `/api/sample?lat=${lat}&lon=${lon}&radius=${radius}`
         );
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error('Failed to fetch data.');
         }
         const data = await response.json();
         setPlaces(data.results);
@@ -44,8 +51,27 @@ const LocationResults = ({ lat, lon, radius }) => {
     fetchData();
   }, [lat, lon, radius]);
 
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  // Loading and Error Messages
+  if (loading) return <div className="loading">
+    <Text
+      style={{
+        fontSize: '20px',
+        color: theme === 'dark' ? 'white' : 'black',
+        marginBottom: '10px'
+      }}
+    >
+    Loading...
+    </Text>
+    <Spin/></div>;
+
+  if (error) return <div>
+    <Alert 
+      message="Error!" 
+      description={error} 
+      type="error" 
+      showIcon
+    />
+    </div>;
 
   return (
     <div className="location-results">
