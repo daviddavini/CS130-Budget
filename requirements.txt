@@ -8,3 +8,6 @@ django-cors-headers
 fuzzywuzzy
 google-generativeai
 google-auth
+psycopg2
+psycopg
+python-Levenshtein

@@ -7,6 +7,7 @@ import Login from './Login';
 import Signup from './Signup';
 import BudgetPlan from './BudgetPlan';
 import ConfirmBudgetPlan from './ConfirmBudgetPlan';
+import Visualization from './Visualization';
 
 const Views = () => {
     return (
@@ -19,6 +20,7 @@ const Views = () => {
             <Route path="/budgetplan" element={<BudgetPlan />} />
             <Route path="/confirmplan" element={<ConfirmBudgetPlan />} />
             <Route path="*" element={<Login />} />
+	    <Route path="/visualize" element={<Visualization />} />
         </Routes>
     );
 };
