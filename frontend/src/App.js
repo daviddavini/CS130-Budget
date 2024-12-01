@@ -4,6 +4,8 @@ import './App.css';
 import Navbar from './Navbar';
 import Views from './Routes';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './AuthContext';
+import UserProfileIcon from './UserProfileIcon'; 
 
 // ThemeContext to manage the current theme state globally
 export const ThemeContext = React.createContext(null);
@@ -27,6 +29,7 @@ const App = () => {
 
     return (
         <GoogleOAuthProvider clientId={CLIENT_ID}>
+            <AuthProvider>
             <ThemeContext.Provider value={{ theme, toggleTheme }}>
                 <ConfigProvider
                     theme={{
@@ -40,6 +43,7 @@ const App = () => {
                         </div>
 
                     {/* Dark/light theme button */}
+                    <div className="top-right-container">
                     <Button
                         type="primary"
                         onClick={toggleTheme}
@@ -47,9 +51,13 @@ const App = () => {
                     >
                         Switch to {theme === "dark" ? 'Light' : 'Dark'} Mode
                     </Button> 
+                    {/* Profile icon */}
+                    <UserProfileIcon />
+                    </div>
                 </div>
                 </ConfigProvider>
             </ThemeContext.Provider>
+            </AuthProvider>
         </GoogleOAuthProvider>
     );
 };

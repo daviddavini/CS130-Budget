@@ -1,20 +1,27 @@
 import React, { useContext } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { ThemeContext } from './App'; 
+import { AuthContext } from './AuthContext';
 import './GoogleLoginButton.css';
 import './Login.css'; 
+
 function GoogleLoginButton() {
   const { theme } = useContext(ThemeContext); 
+  const { login } = useContext(AuthContext);
+
 
   const handleSuccess = (credentialResponse) => {
     console.log('Login Success:', credentialResponse);
-
+    login(credentialResponse.credential);
     fetch('/api/google-auth/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: credentialResponse.credential }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log('Backend response:', res);
+        return res.json()
+  })
       .then((data) => {
         console.log('Backend response:', data);
         if (data.token) {

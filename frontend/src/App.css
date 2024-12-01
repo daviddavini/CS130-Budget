@@ -107,10 +107,15 @@ button:disabled {
 }
 
 /*******************Theme Button*******************/
-.theme-button {
+.top-right-container {
   position: absolute;
   top: 20px;
   right: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.theme-button {
   border-radius: 5px;
   border: none;
   padding: 10px 20px;

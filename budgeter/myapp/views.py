@@ -158,6 +158,10 @@ def google_auth(request):
     except ValueError:
         # Invalid token
         return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+    except GoogleAuthError as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': 'An unexpected error occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
