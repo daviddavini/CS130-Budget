@@ -47,6 +47,10 @@ const Login = () => {
             navigate('/');
 	} catch(error) {
 	    console.error("Error during sign in:", error);
+	    notification.warning({
+		message: 'Login Failed',
+		description: `Incorrect username or password`,
+	    });
 	}
 
         

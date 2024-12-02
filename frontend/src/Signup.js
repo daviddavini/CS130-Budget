@@ -44,6 +44,10 @@ const Signup = () => {
             navigate('/budgetplan');
 	} catch(error) {
 	    console.error("Error during manual sign up:", error);
+	    notification.warning({
+		message: 'Sign up Failed',
+		description: `Your username has been already taken`,
+	    });
 	}
     };
 

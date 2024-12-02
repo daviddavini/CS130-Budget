@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown, Menu, Button, Input, DatePicker, Form, Spin, Alert } from 'antd';
+import { Dropdown, Menu, Button, Input, DatePicker, Form, Spin, Alert, notification } from 'antd';
 import './LogSpending.css';
 import moment from 'moment';
 
@@ -74,6 +74,10 @@ const LogSpending = () => {
         console.log('Response: ', data);
 
         setError(null); // Set error message
+	notification.success({
+	    message: 'Spending logged successfully',
+	    description: ``,
+        });
       } catch (error) {
         console.error('Error during manual entry:', error);
         setError(error.message); // Set error message
@@ -100,6 +104,10 @@ const LogSpending = () => {
         const result = await response.json();
         console.log('OCR Result:', result);
         setError(null);
+	notification.success({
+	    message: 'Receipt logged successfully',
+	    description: "",
+        });
       } catch (error) {
         console.error('Error during receipt handling:', error);
         setError(error.message); // Set error message
