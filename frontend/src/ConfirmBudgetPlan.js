@@ -72,10 +72,18 @@ const ConfirmBudgetPlan = () => {
             },
 	],
     };
-
+    console.log(theme);
 
     const options = {
-
+	responsive: true,
+	plugins: {
+	    legend: {
+		position: 'left',
+		labels: {
+		    color: '#9A90E0',
+		},
+	    },
+	},
     };
 
 
