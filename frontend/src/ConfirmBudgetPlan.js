@@ -76,7 +76,14 @@ const ConfirmBudgetPlan = () => {
 
 
     const options = {
-
+	plugins: {
+	    legend: {
+		position: 'left',
+		labels : {
+		    color: '#00AFCF',
+		},
+	    },
+	},
     };
 
 
