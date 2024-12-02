@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './LocationResults.css';
 
-const LocationItem = ({ name, address, distance, phone, website, opening_hours, brand }) => {
+const LocationItem = ({ name, address, distance, phone, website, opening_hours, brand, businessInfo }) => {
+  if (businessInfo) {
+    var labels = businessInfo['instance_of'].map(item => item.label);
+    var commaSeparatedLabels = labels.join(', ');
+  }
   return (
-    <div className="location-item">
+    <div className={`location-item ${businessInfo ? 'chain-business' : ''}`}>
       <h3>{name}</h3>
       <p className="address">{address}</p>
       <div className="tags">
@@ -12,6 +16,15 @@ const LocationItem = ({ name, address, distance, phone, website, opening_hours, 
         <div className="information">Hours: {opening_hours || 'N/A'}</div>
       </div>
       <p className="distance"><strong>Distance:</strong> {distance} km</p>
+      {businessInfo && (
+        <div className="warning"><strong>WARNING:</strong> This is a chain business!</div>
+      )}
+      {businessInfo && businessInfo["number_of_branches"] && (
+        <div className="warning-detail"><strong># Branches:</strong> {businessInfo["number_of_branches"]} </div>
+      )}
+      {businessInfo && businessInfo["instance_of"] && (
+        <div className="warning-detail"><strong>Identifiers:</strong> {commaSeparatedLabels} </div>
+      )}
     </div>
   );
 };
@@ -65,6 +78,7 @@ const LocationResults = ({ lat, lon, radius }) => {
 		    website={place.website}
 		    opening_hours={place.opening_hours}
 		    distance={place.distance_km.toFixed(3)}
+        businessInfo={place.business_info}
 		/>
           ))}
         </div>
