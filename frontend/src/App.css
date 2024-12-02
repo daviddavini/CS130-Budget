@@ -57,7 +57,7 @@ h1 {
 }
 
 .app.light .content {
-  background-color: ghostwhite;
+  background-color: rgb(226, 236, 255);
   box-shadow: 0px 0px 5px 2px lavender;
   color: black;
 }
