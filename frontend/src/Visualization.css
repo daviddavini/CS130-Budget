@@ -80,3 +80,15 @@ th, td {
     width: 100%;
     margin-top: -100px;
 }
+
+.bar-graph {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.line-graph {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}

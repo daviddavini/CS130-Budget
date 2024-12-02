@@ -30,18 +30,20 @@ const ExpenseBarChart = ({ data }) => {
     return (
 	<div>
 	    <h3> Expense Breakdown </h3>
-            <BarChart width={600} height={300} data={chartData}>
-		<CartesianGrid strokeDasharray="3 3" />
-		<XAxis dataKey="name" tick={{ fill: axisLabelColor, fontSize: 10 }} angle={-35} textAnchor="end" />
-		<YAxis tick={{ fill: axisLabelColor }} />
-		<Tooltip />
-		<Legend className='axis-label' />
-		<Bar dataKey="value" fill="#8884d8">
-                    {chartData.map((entry, index) => (
-			<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-		</Bar>
-            </BarChart>
+	    <div className='bar-graph'>
+		<BarChart width={600} height={300} data={chartData}>
+		    <CartesianGrid strokeDasharray="3 3" />
+		    <XAxis dataKey="name" tick={{ fill: axisLabelColor, fontSize: 10 }} angle={-35} textAnchor="end" />
+		    <YAxis tick={{ fill: axisLabelColor }} />
+		    <Tooltip />
+		    <Legend className='axis-label' />
+		    <Bar dataKey="value" fill="#8884d8">
+			{chartData.map((entry, index) => (
+			    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+			))}
+		    </Bar>
+		</BarChart>
+	    </div>
 	</div>
     );
 };
