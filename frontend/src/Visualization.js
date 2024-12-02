@@ -83,9 +83,10 @@ const Visualization = ({ startDate, endDate }) => {
     return (
         <div className="visualize">
             <h2>Expense Summary</h2>
+	    {error && <p className="error">{error}</p>} {/* Error message */}
             <form onSubmit={handleSubmit} className='form'>
 		{loading && <p>Loading...</p>} {/* Loading indicator */}
-		{error && <p className="error">{error}</p>} {/* Error message */}
+		
 		<div className="date-input">
 		    <label>
 			Date:
