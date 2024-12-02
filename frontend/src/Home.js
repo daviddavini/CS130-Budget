@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import ExpensePieChart from './PieChart';
 import ExpenseBarChart from './BarChart';
 import ExpenseLineChart from './LineChart';
+import GoalComparisonChart from './GoalComparisonChart';
 
 const Home = () => {
     const [currentExpense, setCurrentExpense] = useState(null);
     const [dateExpenses, setDateExpenses] = useState(null);
+    const [goals, setGoals] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -33,8 +35,9 @@ const Home = () => {
 	    }
 	    const data = await response.json();
 	    setCurrentExpense(data.summary);
-	    
+	    setGoals(data.goal_summary);
 	    setDateExpenses(data.date_summary);
+	    console.log(goals);
 	} catch (error) {
 	    setError(error.message);
 	}
@@ -48,9 +51,11 @@ const Home = () => {
 	    {currentExpense && Object.keys(currentExpense).length > 0 ?
 	     (
 		 <>
+		     {goals && <GoalComparisonChart expenses={currentExpense} goals={goals} />}
 		     <ExpenseLineChart data={dateExpenses} />
 		     <ExpensePieChart data={currentExpense} />
 		     <ExpenseBarChart data={currentExpense} />
+		     
 		 </>
 	     ) : (
 		 <p>No expenses for the current month.</p>

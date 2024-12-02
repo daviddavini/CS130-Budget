@@ -2,7 +2,24 @@ import React from 'react';
 import { PieChart, Pie, Cell, Legend } from 'recharts';
 import './Visualization.css';
 
-const COLORS = ['#FF5733', '#33FF57', '#FF33A1', '#FFC300', '#3357FF', '#AAC786', '#900C3F', '#581845', '#FF5733', '#C70039','#FFC300', '#28B463', '#3498DB', '#8E44AD'];
+const COLORS = [
+    'rgba(255, 87, 51, 0.8)',   // #FF5733
+    'rgba(51, 255, 87, 0.8)',   // #33FF57
+    'rgba(255, 51, 161, 0.8)',   // #FF33A1
+    'rgba(255, 195, 0, 0.8)',    // #FFC300
+    'rgba(51, 87, 255, 0.8)',    // #3357FF
+    'rgba(170, 199, 134, 0.8)',   // #AAC786
+    'rgba(144, 12, 63, 0.8)',    // #900C3F
+    'rgba(88, 24, 69, 0.8)',     // #581845
+    'rgba(255, 165, 0, 0.8)',    // #FFA500
+    'rgba(75, 192, 192, 0.8)',   // #4BC0C0
+    'rgba(153, 102, 255, 0.8)',   // #9966FF
+    'rgba(255, 99, 132, 0.8)',   // #FF6384
+    'rgba(54, 162, 235, 0.8)',   // #36A2EB
+    'rgba(255, 206, 86, 0.8)',   // #FFCE56
+    'rgba(128, 77, 255, 0.8)'    // #804DFF
+];
+
 
 const ExpensePieChart = ({ data }) => {
     const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
