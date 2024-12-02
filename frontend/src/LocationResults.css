@@ -29,6 +29,10 @@
     color: #333;
 }
 
+.app.light .location-item.chain-business {
+    background-color: rgb(214, 191, 191);
+}
+
 .app.light .location-item:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -38,6 +42,10 @@
     background-color: #2b2b2b;
     border: 1px solid #444;
     color: #ddd;
+}
+
+.app.dark .location-item.chain-business {
+    background-color: rgb(95, 0, 0);
 }
 
 .app.dark .location-item:hover {
@@ -71,6 +79,35 @@
 .location-item .information a:hover {
     text-decoration: underline;
 }
+
+.warning {
+    font-weight: bold;
+    margin-top: 10px;
+    margin: 10px 0;
+  }
+
+.warning-detail {
+    color: rgb(255, 215, 177);
+    font-size: 14px;
+    margin: 10px 0;
+  }
+
+  .app.light .warning {
+    color: rgb(139, 0, 0);
+
+  }
+
+.app.light .warning-detail {
+    color: rgb(139, 0, 0);
+  }
+
+  .app.dark .warning {
+    color: rgb(255, 215, 177);
+  }
+
+.app.dark .warning-detail {
+    color: rgb(255, 215, 177);
+  }
 /* 
 .address {
     font-size: 14px;

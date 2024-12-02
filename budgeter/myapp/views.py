@@ -17,7 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from django.utils import timezone
 from datetime import datetime
-
+from .externalapis.wikidata import get_business_info
 
 @api_view(['GET'])
 def sample_api(request):
@@ -30,6 +30,15 @@ def sample_api(request):
         lat=lat,
         lon=lon,
     )
+    for node in nodes:
+        wikidata_id = node.get('wikidata') or node.get('brand:wikidata')
+        if wikidata_id:
+            try:
+                business_info = get_business_info(wikidata_id)
+                node['business_info'] = business_info
+            except Exception as e:
+                print(f"Failed to fetch business info for {wikidata_id}: {e}")
+
     return Response({"results": nodes})
 
 @api_view(['GET'])
