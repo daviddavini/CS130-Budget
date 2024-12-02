@@ -238,7 +238,7 @@ def get_visualization(request):
         date_summary[date_key] = values
         summary[transaction.spending_type] = summary.get(transaction.spending_type, 0) + transaction.amount
 
-    goals = Goals.objects.filter(user=user)
+    goals = Goal.objects.filter(user=user)
     goal_summary = {goal.spending_type: goal.amount for goal in goals}
     
     return Response({
