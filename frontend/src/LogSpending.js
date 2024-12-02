@@ -4,21 +4,23 @@ import './LogSpending.css';
 import moment from 'moment';
 
 const LogSpending = () => {
-  const [isManual, setIsManual] = useState(false);
-  const [formData, setFormData] = useState({
-    description: '',
-    amount: '',
-    category: '',
-    date: '',
-  });
-  const [receipt, setReceipt] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null); // Error state
+    const [isManual, setIsManual] = useState(false);
+    const [formData, setFormData] = useState({
+	description: '',
+	amount: '',
+	category: '',
+	date: '',
+    });
+    const [receipt, setReceipt] = useState(null);
+    const [loading, setLoading] = useState(false); // Loading state
+    const [error, setError] = useState(null); // Error state
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const handleInputChange = (e) => {
+	const { name, value } = e.target;
+	console.log(`Selected ${name}: ${value}`); // Log selected category
+	setFormData({ ...formData, [name]: value });
+	console.log(formData);
+    };
 
   const handleMenuClick = (e) => {
     setFormData({ ...formData, category: e.key });
@@ -33,15 +35,15 @@ const LogSpending = () => {
     setReceipt(file);
   };
 
-  const handleManualInputClick = () => {
-    setIsManual(true);
-    setError(null); // Reset error when switching to manual input
-  };
+    const handleManualInputClick = () => {
+	setIsManual(true);
+	setError(null); // Reset error when switching to manual input
+    };
 
-  const handleUploadReceiptClick = () => {
-    setIsManual(false);
-    setError(null); // Reset error when switching to upload receipt
-  };
+    const handleUploadReceiptClick = () => {
+	setIsManual(false);
+	setError(null); // Reset error when switching to upload receipt
+    };
 
   const handleSubmit = async (e) => {
     const token = localStorage.getItem('token');
@@ -204,6 +206,7 @@ const LogSpending = () => {
       </Form>
     </div>
   );
+
 };
 
 export default LogSpending;

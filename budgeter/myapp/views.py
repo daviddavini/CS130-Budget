@@ -130,11 +130,13 @@ def receipt_scanning(request):
             print(grouped_res)
     saved_transactions = []
       # Create a transaction for each category
+    current_date = datetime.now().date()
+    
     for category, amount in grouped_res.items():
         transaction = Transaction(
             user=user,
             amount=amount,
-            date=timezone.now(),
+            date=current_date,
             spending_type=category  # Assuming category matches SpendingType choices
         )
         transaction.save()
