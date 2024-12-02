@@ -86,6 +86,7 @@ def manual_input(request):
         return Response({'error': 'Invalid category'}, status=status.HTTP_400_BAD_REQUEST)
 
     date = request.GET.get('date')
+    date = timezone.make_aware(datetime.strptime(date, '%Y-%m-%d'), timezone.get_current_timezone())
     transaction = Transaction(
         user=user,
         amount=amount,
@@ -213,6 +214,7 @@ def get_visualization(request):
     end = request.GET.get('end')
     start_date = timezone.make_aware(datetime.strptime(start, '%Y-%m-%d'), timezone.get_current_timezone())
     end_date = timezone.make_aware(datetime.strptime(end, '%Y-%m-%d'), timezone.get_current_timezone())
+    print(start_date, end_date)
     
     transactions = Transaction.objects.filter(user=user)
     print("All user transactions", transactions)

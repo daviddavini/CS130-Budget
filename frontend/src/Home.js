@@ -20,12 +20,8 @@ const Home = () => {
 	    }
 	    const currentDate = new Date();
 	    const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-	    currentMonthStart.setHours(0, 0, 0, 0);
-	    const nextDate = new Date(currentDate);
-	    nextDate.setDate(currentDate.getDate() + 1);
-	    nextDate.setHours(16, 0, 0, 0);
-	    console.log(currentMonthStart, nextDate);
-	    const response = await fetch(`/api/visualize/?start=${currentMonthStart.toISOString().split('T')[0]}&end=${nextDate.toISOString().split('T')[0]}`, {
+	    console.log(currentMonthStart, currentDate);
+	    const response = await fetch(`/api/visualize/?start=${currentMonthStart.toISOString().split('T')[0]}&end=${currentDate.toISOString().split('T')[0]}`, {
 		method: 'GET',
                 headers: {
                     Authorization: `Token ${localStorage.getItem('token')}`,
