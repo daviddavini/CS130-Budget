@@ -92,3 +92,7 @@ th, td {
     justify-content: center;
     width: 100%;
 }
+
+.visual-options {
+    padding-bottom: 40px;
+}
