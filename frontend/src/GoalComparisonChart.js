@@ -101,6 +101,7 @@ const GoalComparisonChart = ({ expenses, goals }) => {
             <Bar options={options} data={data} />
             <div style={{ marginTop: '20px' }}>
                 {exceededCategories.length > 0 ? (
+					
                     <span style={{ color: '#FA003F' }}>
                         Warning: You have exceeded your budget for the following categories:
 			<br></br>

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Dropdown, Menu, Button, Input, DatePicker, Form, Spin, Alert } from 'antd';
 import './LogSpending.css';
+import moment from 'moment';
 
 const LogSpending = () => {
     const [isManual, setIsManual] = useState(false);
@@ -20,10 +22,18 @@ const LogSpending = () => {
 	console.log(formData);
     };
 
-    const handleFileUpload = (e) => {
-	const file = e.target.files[0];
-	setReceipt(file);
-    };
+  const handleMenuClick = (e) => {
+    setFormData({ ...formData, category: e.key });
+  };
+
+  const handleDateChange = (date, dateString) => {
+    setFormData({ ...formData, date: dateString });
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    setReceipt(file);
+  };
 
     const handleManualInputClick = () => {
 	setIsManual(true);
@@ -35,146 +45,168 @@ const LogSpending = () => {
 	setError(null); // Reset error when switching to upload receipt
     };
 
-    const handleSubmit = async (e) => {
-	const token = localStorage.getItem('token');
-	setLoading(true); // Set loading to true
-	setError(null); // Reset any previous errors  
-	e.preventDefault();
-	if (isManual) {
-	    const amount = formData.amount;
-	    const category = formData.category;
-	    console.log(category);
-	    const date = formData.date;
-	    try {
-		if (token === null) {
-		    throw new Error("You have not logged in yet!");
-		}
-		const response = await fetch(`/api/manual-input/?amount=${amount}&category=${category}&date=${date}`, {
-		    method: 'GET',
-		    headers: {
-			'Authorization': `Token ${token}`,
-		    }
-		});
-		if (!response.ok) {
-		    const errorData = await response.json(); // Get error data from response
-		    throw new Error(errorData.error || 'An unknown error occurred');
-		}
+  const handleSubmit = async (e) => {
+    const token = localStorage.getItem('token');
+    setLoading(true); // Set loading to true
+    setError(null); // Reset any previous errors  
+    //e.preventDefault();
+    if (isManual) {
+      const amount = formData.amount;
+      const category = formData.category;
+      const date = formData.date;
+      try {
+        if (token === null) {
+          throw new Error("You have not logged in yet!");
+        }
+        const response = await fetch(`/api/manual-input/?amount=${amount}&category=${category}&date=${date}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Token ${token}`,
+          }
+        });
+        if (!response.ok) {
+          const errorData = await response.json(); // Get error data from response
+          throw new Error(errorData.error || 'An unknown error occurred');
+        }
 
-		const data = await response.json();
-		console.log('Manual Entry:', formData);
-		console.log('Response: ', data);
+        const data = await response.json();
+        console.log('Manual Entry:', formData);
+        console.log('Response: ', data);
 
-		setError(null); // Set error message
-	    } catch (error) {
-		console.error('Error during manual entry:', error);
-		setError(error.message); // Set error message
-	    }
-	} else if (receipt) {
-	    const form = new FormData();
-	    form.append('image', receipt); // Use 'image' as the key
+        setError(null); // Set error message
+      } catch (error) {
+        console.error('Error during manual entry:', error);
+        setError(error.message); // Set error message
+      }
+    } else if (receipt) {
+      const form = new FormData();
+      form.append('image', receipt); // Use 'image' as the key
 
-	    try {
-		if (token === null) {
-		    throw new Error("You have not logged in yet!");
-		}
-		const response = await fetch('/api/scan/', {
-		    method: 'POST',
-		    headers: {
-			'Authorization': `Token ${token}`
-		    },
-		    body: form,
-		});
-		if (!response.ok) {
-		    const errorData = await response.json(); // Get error data from response
-		    throw new Error(errorData.error || 'An unknown error occurred');
-		}
-		const result = await response.json();
-		console.log('OCR Result:', result);
-		setError(null);
-	    } catch (error) {
-		console.error('Error during receipt handling:', error);
-		setError(error.message); // Set error message
-	    }
-	    console.log('Uploaded Receipt:', receipt.name);
-	}
-	setFormData({ description: '', amount: '', category: '', date: '' });
-	setReceipt(null);
-	setLoading(false);
-    };
+      try {
+        if (token === null) {
+          throw new Error("You have not logged in yet!");
+        }
+        const response = await fetch('api/scan/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${token}`
+          },
+          body: form,
+        });
+        if (!response.ok) {
+          const errorData = await response.json(); // Get error data from response
+          throw new Error(errorData.error || 'An unknown error occurred');
+        }
+        const result = await response.json();
+        console.log('OCR Result:', result);
+        setError(null);
+      } catch (error) {
+        console.error('Error during receipt handling:', error);
+        setError(error.message); // Set error message
+      }
+      console.log('Uploaded Receipt:', receipt.name);
+      setFormData({ description: '', amount: '', category: '', date: '' });
+    }
+    
+    setReceipt(null);
+    setLoading(false);
+  };
 
-    return (
-	<div className="log-spending">
-	    <h1>Log Spending</h1>
-	    <div className="options">
-		<button onClick={handleManualInputClick} className={isManual ? 'active' : ''}>
-		    Input Manually
-		</button>
-		<button onClick={handleUploadReceiptClick} className={!isManual ? 'active' : ''}>
-		    Upload Receipt
-		</button>
-	    </div>
-	    <form onSubmit={handleSubmit}>
-		{loading && <p>Loading...</p>} {/* Loading indicator */}
-		{error && <p className="error">{error}</p>} {/* Error message */}
-		{isManual ? (
-		    <div className="manual-input">
-			<label>
-			    Description:
-			    <input
-				type="text"
-				name="description"
-				value={formData.description}
-				onChange={handleInputChange}
-				required
-			    />
-			</label>
-			<label>
-			    Amount:
-			    <input
-				type="number"
-				name="amount"
-				value={formData.amount}
-				onChange={handleInputChange}
-				required
-			    />
-			</label>
-			<label>
-			    Category:
-			    <input
-				type="text"
-				name="category"
-				value={formData.category}
-				onChange={handleInputChange}
-				required
-			    />
-			</label>
-			<label>
-			    Date:
-			    <input
-				type="date"
-				name="date"
-				value={formData.date}
-				onChange={handleInputChange}
-				required
-			    />
-			</label>
-		    </div>
-		) : (
-		    <div className="upload-receipt">
-			<label>
-			    Upload Receipt:
-			    <input type="file" accept="image/*" onChange={handleFileUpload} required />
-			</label>
-			{receipt && <p>Uploaded: {receipt.name}</p>}
-		    </div>
-		)}
-		<button type="submit" className="submit-button" disabled={loading}>
-		    Submit
-		</button>
+  useEffect(() => {
+    console.log('Current Form Data:', formData);
+  }, [formData]);
 
-	    </form>
-	</div>
-    );
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="Savings">Savings</Menu.Item>
+      <Menu.Item key="Housing">Housing</Menu.Item>
+      <Menu.Item key="Transportation">Transportation</Menu.Item>
+      <Menu.Item key="Food">Food</Menu.Item>
+      <Menu.Item key="Utilities">Utilities</Menu.Item>
+      <Menu.Item key="Medical">Medical</Menu.Item>
+      <Menu.Item key="Insurance">Insurance</Menu.Item>
+      <Menu.Item key="Education">Education</Menu.Item>
+      <Menu.Item key="Entertainment">Entertainment</Menu.Item>
+      <Menu.Item key="Clothing">Clothing</Menu.Item>
+      <Menu.Item key="Personal Care">Personal Care</Menu.Item>
+      <Menu.Item key="Pet">Pet</Menu.Item>
+      <Menu.Item key="Travel">Travel</Menu.Item>
+      <Menu.Item key="Gifting">Gifting</Menu.Item>
+      <Menu.Item key="Misc">Miscellaneous</Menu.Item>
+    </Menu>
+  );
+
+  return (
+    <div className="log-spending">
+      <h1>Log Spending</h1>
+      <div className="options">
+        <Button onClick={handleManualInputClick} type={isManual ? 'primary' : 'default'}>
+          Input Manually
+        </Button>
+        <Button onClick={handleUploadReceiptClick} type={!isManual ? 'primary' : 'default'}>
+          Upload Receipt
+        </Button>
+      </div>
+      <Form 
+        onFinish={handleSubmit}
+        layout="vertical" 
+        style={{ maxWidth: '450px', margin: 'auto', minWidth: '400px' }}>
+
+        {loading && <Spin />} {/* Loading indicator */}
+        {error && <Alert message={error} type="error" />} {/* Error message */}
+        {isManual ? (
+          <div className="manual-input">
+            <Form.Item label="Description">
+              <Input
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Item>
+            <Form.Item label="Amount">
+              <Input
+                type="number"
+                name="amount"
+                value={formData.amount}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Item>
+            <Form.Item label="Category">
+              <Dropdown overlay={menu}>
+                <Button style={{width: '100%'}}>
+                  {formData.category || 'Select a category'}
+                  
+                </Button>
+              </Dropdown>
+            </Form.Item>
+            <Form.Item label="Date">
+              <DatePicker
+                name="date"
+                style={{width: '100%'}}
+                value={formData.date ? moment(formData.date) : null}
+                onChange={handleDateChange}
+                required
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">Submit</Button>
+            </Form.Item>
+          </div>
+        ) : (
+          <div className="upload-receipt">
+            <Form.Item label="Upload Receipt">
+              <Input type="file" onChange={handleFileUpload} />
+            </Form.Item>
+            <Button type="primary" htmlType="submit">Submit</Button>
+          </div>
+        )}
+      </Form>
+    </div>
+  );
+
 };
 
 export default LogSpending;

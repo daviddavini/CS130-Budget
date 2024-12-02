@@ -30,6 +30,7 @@
 .sidebar ul li {
     margin: 20px auto; /* Adds top/bottom padding b/w list elements. */
     width: 100%;
+    cursor: pointer;
 }
 
 .sidebar ul li a {
@@ -110,3 +111,4 @@
 .app.light .hamburger-menu:hover {
     background-color: lavender;
 }
+

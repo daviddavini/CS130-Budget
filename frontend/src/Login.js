@@ -2,6 +2,7 @@ import React from 'react';
 import GoogleLoginButton from './GoogleLoginButton';
 import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Checkbox, Typography, notification, Divider } from 'antd';
+import { AuthContext } from './AuthContext';
 import { useContext } from 'react';
 import { ThemeContext } from './App';
 import piggy from './assets/Piggy.png';
@@ -11,6 +12,7 @@ const { Title } = Typography;
 
 const Login = () => {
     const { theme } = useContext(ThemeContext);  // Access theme from context
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
     
     const onFinish = async (values) => {
@@ -33,8 +35,7 @@ const Login = () => {
 	    }
 	    const data = await response.json();
 	    if (data.token) {
-		localStorage.setItem('token', data.token);
-		console.log("token: ", localStorage.getItem('token'))
+		login(data.token, 'manual')
 	    } else if (data.error) {
 		throw new Error('Authentication error:', data.error);
 	    }
@@ -42,6 +43,7 @@ const Login = () => {
 		message: 'Login Successful',
 		description: `Welcome back, ${values.username}!`,
 	    });
+	    
             navigate('/');
 	} catch(error) {
 	    console.error("Error during sign in:", error);

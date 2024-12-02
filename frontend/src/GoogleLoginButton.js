@@ -10,11 +10,10 @@ function GoogleLoginButton() {
   const { theme } = useContext(ThemeContext); 
   const { login } = useContext(AuthContext);
 
-
   const navigate = useNavigate();
   const handleSuccess = (credentialResponse) => {
     console.log('Login Success:', credentialResponse);
-    login(credentialResponse.credential);
+      login(credentialResponse.credential, 'google');
     fetch('/api/google-auth/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
