@@ -28,18 +28,21 @@ const ExpenseBarChart = ({ data }) => {
     const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
     const axisLabelColor = theme === "dark" ? '#ddd' : '#222';
     return (
-        <BarChart width={600} height={300} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" tick={{ fill: axisLabelColor }} />
-            <YAxis tick={{ fill: axisLabelColor }} />
-            <Tooltip />
-            <Legend className='axis-label' />
-            <Bar dataKey="value" fill="#8884d8">
-                {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-            </Bar>
-        </BarChart>
+	<div>
+	    <h3> Expense Breakdown </h3>
+            <BarChart width={600} height={300} data={chartData}>
+		<CartesianGrid strokeDasharray="3 3" />
+		<XAxis dataKey="name" tick={{ fill: axisLabelColor }} />
+		<YAxis tick={{ fill: axisLabelColor }} />
+		<Tooltip />
+		<Legend className='axis-label' />
+		<Bar dataKey="value" fill="#8884d8">
+                    {chartData.map((entry, index) => (
+			<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+		</Bar>
+            </BarChart>
+	</div>
     );
 };
 
