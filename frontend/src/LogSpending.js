@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Dropdown, Menu, Button, Input, DatePicker, Form, Spin, Alert } from 'antd';
 import './LogSpending.css';
+import moment from 'moment';
 
 const LogSpending = () => {
   const [isManual, setIsManual] = useState(false);
@@ -16,6 +18,14 @@ const LogSpending = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleMenuClick = (e) => {
+    setFormData({ ...formData, category: e.key });
+  };
+
+  const handleDateChange = (date, dateString) => {
+    setFormData({ ...formData, date: dateString });
   };
 
   const handleFileUpload = (e) => {
@@ -37,7 +47,7 @@ const LogSpending = () => {
     const token = localStorage.getItem('token');
     setLoading(true); // Set loading to true
     setError(null); // Reset any previous errors  
-    e.preventDefault();
+    //e.preventDefault();
     if (isManual) {
       const amount = formData.amount;
       const category = formData.category;
@@ -93,98 +103,105 @@ const LogSpending = () => {
         setError(error.message); // Set error message
       }
       console.log('Uploaded Receipt:', receipt.name);
+      setFormData({ description: '', amount: '', category: '', date: '' });
     }
-    setFormData({ description: '', amount: '', category: '', date: '' });
+    
     setReceipt(null);
     setLoading(false);
   };
+
+  useEffect(() => {
+    console.log('Current Form Data:', formData);
+  }, [formData]);
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="Savings">Savings</Menu.Item>
+      <Menu.Item key="Housing">Housing</Menu.Item>
+      <Menu.Item key="Transportation">Transportation</Menu.Item>
+      <Menu.Item key="Food">Food</Menu.Item>
+      <Menu.Item key="Utilities">Utilities</Menu.Item>
+      <Menu.Item key="Medical">Medical</Menu.Item>
+      <Menu.Item key="Insurance">Insurance</Menu.Item>
+      <Menu.Item key="Education">Education</Menu.Item>
+      <Menu.Item key="Entertainment">Entertainment</Menu.Item>
+      <Menu.Item key="Clothing">Clothing</Menu.Item>
+      <Menu.Item key="Personal">Personal</Menu.Item>
+      <Menu.Item key="Pet">Pet</Menu.Item>
+      <Menu.Item key="Travel">Travel</Menu.Item>
+      <Menu.Item key="Gifting">Gifting</Menu.Item>
+      <Menu.Item key="Miscellaneous">Miscellaneous</Menu.Item>
+    </Menu>
+  );
 
   return (
     <div className="log-spending">
       <h1>Log Spending</h1>
       <div className="options">
-        <button onClick={handleManualInputClick} className={isManual ? 'active' : ''}>
+        <Button onClick={handleManualInputClick} type={isManual ? 'primary' : 'default'}>
           Input Manually
-        </button>
-        <button onClick={handleUploadReceiptClick} className={!isManual ? 'active' : ''}>
+        </Button>
+        <Button onClick={handleUploadReceiptClick} type={!isManual ? 'primary' : 'default'}>
           Upload Receipt
-        </button>
+        </Button>
       </div>
-      <form onSubmit={handleSubmit}>
-        {loading && <p>Loading...</p>} {/* Loading indicator */}
-        {error && <p className="error">{error}</p>} {/* Error message */}
+      <Form 
+        onFinish={handleSubmit}
+        layout="vertical" 
+        style={{ maxWidth: '450px', margin: 'auto', minWidth: '400px' }}>
+
+        {loading && <Spin />} {/* Loading indicator */}
+        {error && <Alert message={error} type="error" />} {/* Error message */}
         {isManual ? (
           <div className="manual-input">
-            <label>
-              Description:
-              <input
+            <Form.Item label="Description">
+              <Input
                 type="text"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
                 required
               />
-            </label>
-            <label>
-              Amount:
-              <input
+            </Form.Item>
+            <Form.Item label="Amount">
+              <Input
                 type="number"
                 name="amount"
                 value={formData.amount}
                 onChange={handleInputChange}
                 required
               />
-            </label>
-            <label>
-              Category:
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="savings">Savings</option>
-                <option value="housing">Housing</option>
-                <option value="transportation">Transportation</option>
-                <option value="food">Food</option>
-                <option value="utilities">Utilities</option>
-                <option value="medical">Medical</option>
-                <option value="insurance">Insurance</option>
-                <option value="education">Education</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="clothing">Clothing</option>
-                <option value="personal">Personal</option>
-                <option value="pet">Pet</option>
-                <option value="travel">Travel</option>
-                <option value="gifting">Gifting</option>
-                <option value="miscellaneous">Miscellaneous</option>
-              </select>
-            </label>
-            <label>
-              Date:
-              <input
-                type="date"
+            </Form.Item>
+            <Form.Item label="Category">
+              <Dropdown overlay={menu}>
+                <Button style={{width: '100%'}}>
+                  {formData.category || 'Select a category'}
+                  
+                </Button>
+              </Dropdown>
+            </Form.Item>
+            <Form.Item label="Date">
+              <DatePicker
                 name="date"
-                value={formData.date}
-                onChange={handleInputChange}
+                style={{width: '100%'}}
+                value={formData.date ? moment(formData.date) : null}
+                onChange={handleDateChange}
                 required
               />
-            </label>
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">Submit</Button>
+            </Form.Item>
           </div>
         ) : (
           <div className="upload-receipt">
-            <label>
-              Upload Receipt:
-              <input type="file" accept="image/*" onChange={handleFileUpload} required />
-            </label>
-            {receipt && <p>Uploaded: {receipt.name}</p>}
+            <Form.Item label="Upload Receipt">
+              <Input type="file" onChange={handleFileUpload} />
+            </Form.Item>
+            <Button type="primary" htmlType="submit">Submit</Button>
           </div>
         )}
-        <button type="submit" className="submit-button" disabled={loading}>
-          Submit
-        </button>
-
-      </form>
+      </Form>
     </div>
   );
 };
