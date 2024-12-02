@@ -18,10 +18,18 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }, []);
-  const login = (credential) => {
-    const decoded = jwtDecode(credential);
-    setUser(decoded);
-    localStorage.setItem('token', credential);
+    const login = (credential, method) => {
+	if (method === 'google') {
+	    const decoded = jwtDecode(credential);
+	    setUser(decoded);
+	} else if (method === 'manual') {
+	    const defaultUser = {
+		picture: '',
+	    }
+	    setUser(defaultUser);
+	}
+	localStorage.setItem('token', credential);
+
   };
 
   const logout = () => {

@@ -14,7 +14,7 @@ const UserProfileIcon = () => {
   const menu = (
     <Menu>
       <Menu.Item key="profile">
-        <Link to="/profile">Profile</Link>
+        <Link to="/">Profile</Link>
       </Menu.Item>
       <Menu.Item key="logout" onClick={logout}>
         Logout

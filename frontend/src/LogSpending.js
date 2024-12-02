@@ -56,7 +56,7 @@ const LogSpending = () => {
         if (token === null) {
           throw new Error("You have not logged in yet!");
         }
-        const response = await fetch(`http://localhost:8000/api/manual-input/?amount=${amount}&category=${category}&date=${date}`, {
+        const response = await fetch(`/api/manual-input/?amount=${amount}&category=${category}&date=${date}`, {
           method: 'GET',
           headers: {
             'Authorization': `Token ${token}`,
@@ -84,7 +84,7 @@ const LogSpending = () => {
         if (token === null) {
           throw new Error("You have not logged in yet!");
         }
-        const response = await fetch('http://localhost:8000/api/scan/', {
+        const response = await fetch('api/scan/', {
           method: 'POST',
           headers: {
             'Authorization': `Token ${token}`
