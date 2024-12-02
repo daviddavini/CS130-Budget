@@ -8,11 +8,20 @@
     font-size: 24px;
 }
 
-.loading,
-.error {
-    font-size: 18px;
-    color: #666;
-    text-align: center;
+/* Loading Message + Loading Spinner Alignment */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Loading Spinner Dot Colors */
+.app.light .ant-spin-dot i {
+    background-color: black;
+}
+
+.app.dark .ant-spin-dot i {
+    background-color: white;
 }
 
 .location-list {
@@ -22,34 +31,48 @@
     justify-content: center;
 }
 
-/* Light Theme */
+/* Light Theme Location Cards */
 .app.light .location-item {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    color: #333;
+    background-color: lavender;
+    border: 2px solid ghostwhite;
+    color: black;
+}
+
+.app.light .location-item:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 5px 5px rgba(128, 0, 128, 0.1);
 }
 
 .app.light .location-item.chain-business {
     background-color: rgb(214, 191, 191);
+    border: 2px solid ghostwhite;
 }
 
-.app.light .location-item:hover {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+.app.light .location-item.chain-business:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 5px 5px rgba(214, 191, 191, 0.5);
 }
 
-/* Dark Theme */
+/* Dark Theme Location Cards */
 .app.dark .location-item {
     background-color: #2b2b2b;
-    border: 1px solid #444;
-    color: #ddd;
+    border: 2px solid #444;
+    color: white;
+}
+
+.app.dark .location-item:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.2);
 }
 
 .app.dark .location-item.chain-business {
     background-color: rgb(95, 0, 0);
+    border: 2px solid #444;
 }
 
-.app.dark .location-item:hover {
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+.app.dark .location-item.chain-business:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 5px 5px rgba(233, 163, 163, 0.775);
 }
 
 /* Common Styles */
@@ -84,30 +107,29 @@
     font-weight: bold;
     margin-top: 10px;
     margin: 10px 0;
-  }
+}
 
 .warning-detail {
     color: rgb(255, 215, 177);
     font-size: 14px;
     margin: 10px 0;
-  }
+}
 
-  .app.light .warning {
+.app.light .warning {
     color: rgb(139, 0, 0);
-
-  }
+}
 
 .app.light .warning-detail {
     color: rgb(139, 0, 0);
-  }
+}
 
-  .app.dark .warning {
+.app.dark .warning {
     color: rgb(255, 215, 177);
-  }
+}
 
 .app.dark .warning-detail {
     color: rgb(255, 215, 177);
-  }
+}
 /* 
 .address {
     font-size: 14px;
