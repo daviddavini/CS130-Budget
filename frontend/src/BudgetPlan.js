@@ -10,28 +10,20 @@ const BudgetPlan = () => {
     const { theme } = useContext(ThemeContext);
     const [form] = Form.useForm();
     const [income, setIncome] = useState(0);
-    const [expenses, setExpenses] = useState(0);
-    const [savings, setSavings] = useState(0);
     const navigate = useNavigate();
 
     const handleIncomeChange = (value) => {
         setIncome(value);
     };
 
-    const handleExpensesChange = (value) => {
-        setExpenses(value);
-    };
-
-    const handleSavingsChange = (value) => {   
-        setSavings(value);
-    };
 
     const onFinish = (values) => {
         console.log('Budget Plan:', values);
         notification.success({
-            message: 'Budget Plan Created',
-            description: `Alter your plan as needed. Click 'Confirm Budget Plan' to proceed.`,
+            message: 'Income is set!',
+            description: `Now alter your budget plan according to your income. Click 'Confirm Budget Plan' to save your plans.`,
         });
+	localStorage.setItem('income', income);
         navigate('/confirmplan');
     }
 
@@ -58,35 +50,7 @@ const BudgetPlan = () => {
 
                 </Form.Item>
 
-                <Form.Item
-                    label="Estimated Monthly Expenses:"
-                    name="expenses"
-                    rules={[{ required: true, message: 'Expenses cannot be empty.'},
-                        { type: 'number', message: 'Expenses must be a number.' },
-                    ]}
-                >
-                    <InputNumber
-                        value={expenses} 
-                        onChange={handleExpensesChange}
-                        min = {0}
-                        max = {income}
-                    />
-                </Form.Item>
 
-                <Form.Item
-                    label="Desired Monthly Savings:"
-                    name="savings"
-                    rules={[{ required: true, message: 'Savings cannot be empty.' },
-                        { type: 'number', message: 'Savings must be a number.' }, 
-                    ]}
-                >
-                    <InputNumber 
-                        value={savings} 
-                        onChange={handleSavingsChange}
-                        min = {0}
-                        max = {income - expenses}
-                    />
-                </Form.Item>
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit">

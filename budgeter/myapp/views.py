@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from .externalapis.overpass import nearby_stores 
 from myapp.handlers.receipt_handler import ReceiptHandler
-from .serializers import GoalSerializer, SignUpSerializer, LoginSerializer
+from .serializers import SignUpSerializer, LoginSerializer
 from .categorizer import Categorizer
 from .models import SpendingType, Goal, Transaction
 from rest_framework import status
@@ -144,21 +144,30 @@ def receipt_scanning(request):
         }, status=400)
 
 @api_view(['POST'])
-def add_goal(request):
-    serializer = GoalSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors)
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def set_goal(request):
+    decoded = request.body.decode('utf-8')
+    try:
+        data = json.loads(decoded)
+    except json.JSONDecodeError:
+        return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
+    user = request.user
+    print(data)
+    for category, amount in data:
+        Goal.objects.update_or_create(
+            user=user,
+            spending_type=category,
+            defaults={'amount': amount}
+        )
+    print(Goal.objects.all())
+    return Response({'status': 'success'})
+    
 
 @api_view(['GET'])
-def list_goals(request):
-    goals = Goal.objects.all()
-    serializer = GoalSerializer(goals, many=True)
-    return Response(serializer.data)
-
-@api_view(['DELETE'])
-def remove_goal(request, id):
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def remove_goal(request):
     try:
         goal = Goal.objects.get(id=id)  # Get the goal by ID
         goal.delete()  # Delete the goal from the database
@@ -228,8 +237,15 @@ def get_visualization(request):
         values[transaction.spending_type] = values.get(transaction.spending_type, 0) + transaction.amount
         date_summary[date_key] = values
         summary[transaction.spending_type] = summary.get(transaction.spending_type, 0) + transaction.amount
-    print(summary)
-    print(date_summary)
-    return Response({'summary': summary, 'date_summary': date_summary, 'error': 'None'})
+
+    goals = Goals.objects.filter(user=user)
+    goal_summary = {goal.spending_type: goal.amount for goal in goals}
+    
+    return Response({
+        'summary': summary,
+        'date_summary': date_summary,
+        'goal_summary': goal_summary,
+        'error': 'None'
+    })
     
     
