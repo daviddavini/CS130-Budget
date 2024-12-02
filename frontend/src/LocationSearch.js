@@ -34,7 +34,7 @@ function LocationSearch() {
   return (
     <div className="location-search">
       <h1>📍 Local Business Finder</h1>
-      <h3>First, we'll need to access your location</h3>
+      <h3>First, we'll need to access your location:</h3>
       <button className="get-location-btn" onClick={handleGetLocation} disabled={loading}>
         {loading ? "Fetching..." : "Get My Location"}
       </button>

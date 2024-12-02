@@ -32,3 +32,8 @@
     overflow-y: auto;
     padding-bottom: 20px;
 }
+
+.get-location-btn {
+    background-color: #007bff;
+    color: white;
+}

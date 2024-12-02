@@ -126,11 +126,11 @@ const LogSpending = () => {
       <Menu.Item key="Education">Education</Menu.Item>
       <Menu.Item key="Entertainment">Entertainment</Menu.Item>
       <Menu.Item key="Clothing">Clothing</Menu.Item>
-      <Menu.Item key="Personal">Personal</Menu.Item>
+      <Menu.Item key="Personal Care">Personal Care</Menu.Item>
       <Menu.Item key="Pet">Pet</Menu.Item>
       <Menu.Item key="Travel">Travel</Menu.Item>
       <Menu.Item key="Gifting">Gifting</Menu.Item>
-      <Menu.Item key="Miscellaneous">Miscellaneous</Menu.Item>
+      <Menu.Item key="Misc">Miscellaneous</Menu.Item>
     </Menu>
   );
 
