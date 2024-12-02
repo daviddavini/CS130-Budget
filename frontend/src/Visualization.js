@@ -5,13 +5,16 @@ import ExpenseBarChart from './BarChart' ;
 import ExpenseLineChart from './LineChart' ;
 
 const Visualization = ({ startDate, endDate }) => {
+	const currentDate = new Date();
+	const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+	const defaultEndDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-	startDate: '',
-	endDate: '',
+	startDate: defaultStartDate.toISOString().split('T')[0],
+	endDate: defaultEndDate.toISOString().split('T')[0]
     });
-    const [loaded, setLoaded] = useState(false);
+	const [loaded, setLoaded] = useState(false);
     const [expense, setExpense] = useState(null);
     const [dateExpenses, setDateExpenses] = useState(null);
     const [selected, setSelected] = useState({
