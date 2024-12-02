@@ -39,18 +39,14 @@ const Visualization = ({ startDate, endDate }) => {
 	e.preventDefault();
 	console.log("Hello");
 	const startDate = new Date(formData.startDate);
-	startDate.setHours(0, 0, 0, 0);
-	startDate.setDate(startDate.getDate() + 1);
 	const endDate = new Date(formData.endDate);
-	endDate.setHours(16, 0, 0, 0);
-	const nextDate = new Date(endDate);
-	nextDate.setDate(endDate.getDate() + 2);
-	console.log(startDate, nextDate);
+	endDate.setDate(endDate.getDate() + 1);
+	console.log(startDate, endDate);
         try {
 	    if (localStorage.getItem('token') === null) {
 		throw new Error("You have not logged in yet!");
 	    }
-            const response = await fetch(`/api/visualize/?start=${startDate.toISOString().split('T')[0]}&end=${nextDate.toISOString().split('T')[0]}`, {
+            const response = await fetch(`/api/visualize/?start=${startDate.toISOString().split('T')[0]}&end=${endDate.toISOString().split('T')[0]}`, {
 		method: 'GET',
                 headers: {
                     Authorization: `Token ${localStorage.getItem('token')}`,

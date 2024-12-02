@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import ExpensePieChart from './PieChart';
 import ExpenseBarChart from './BarChart';
 import ExpenseLineChart from './LineChart';
+import GoalComparisonChart from './GoalComparisonChart';
 
 const Home = () => {
     const [currentExpense, setCurrentExpense] = useState(null);
     const [dateExpenses, setDateExpenses] = useState(null);
+    const [goals, setGoals] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -20,12 +22,8 @@ const Home = () => {
 	    }
 	    const currentDate = new Date();
 	    const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-	    currentMonthStart.setHours(0, 0, 0, 0);
-	    const nextDate = new Date(currentDate);
-	    nextDate.setDate(currentDate.getDate() + 1);
-	    nextDate.setHours(16, 0, 0, 0);
-	    console.log(currentMonthStart, nextDate);
-	    const response = await fetch(`/api/visualize/?start=${currentMonthStart.toISOString().split('T')[0]}&end=${nextDate.toISOString().split('T')[0]}`, {
+	    console.log(currentMonthStart, currentDate);
+	    const response = await fetch(`/api/visualize/?start=${currentMonthStart.toISOString().split('T')[0]}&end=${currentDate.toISOString().split('T')[0]}`, {
 		method: 'GET',
                 headers: {
                     Authorization: `Token ${localStorage.getItem('token')}`,
@@ -37,8 +35,9 @@ const Home = () => {
 	    }
 	    const data = await response.json();
 	    setCurrentExpense(data.summary);
-	    
+	    setGoals(data.goal_summary);
 	    setDateExpenses(data.date_summary);
+	    console.log(goals);
 	} catch (error) {
 	    setError(error.message);
 	}
@@ -52,9 +51,11 @@ const Home = () => {
 	    {currentExpense && Object.keys(currentExpense).length > 0 ?
 	     (
 		 <>
+		     {goals && <GoalComparisonChart expenses={currentExpense} goals={goals} />}
 		     <ExpenseLineChart data={dateExpenses} />
 		     <ExpensePieChart data={currentExpense} />
 		     <ExpenseBarChart data={currentExpense} />
+		     
 		 </>
 	     ) : (
 		 <p>No expenses for the current month.</p>
