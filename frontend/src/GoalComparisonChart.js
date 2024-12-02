@@ -1,12 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { ThemeContext } from './App';
+import { notification } from 'antd';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const GoalComparisonChart = ({ expenses, goals }) => {
     const { theme } = useContext(ThemeContext);
+    const [notificationOn, setNotificationOn] = useState(false);
+    
     const standardizeKeys = (obj) => {
 	const keyMappings = {
 	    'personal': 'personal care',
@@ -82,6 +85,16 @@ const GoalComparisonChart = ({ expenses, goals }) => {
     };
     
     const exceededCategories = categories.filter(category => (expenses[category] || 0) > (goals[category] || 0));
+    // Show notification only once
+  
+    if (exceededCategories.length > 0 && !notificationOn) {
+        notification.warning({
+            message: 'Warning',
+            description: `You have exceeded your budget for the following categories: ${exceededCategories.join(', ')}`,
+        });
+        setNotificationOn(true); // Set flag to prevent further notifications
+    }
+   
 
     return (
         <div>
