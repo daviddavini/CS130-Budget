@@ -22,22 +22,56 @@
     justify-content: center;
 }
 
-.location-item {
+/* Light Theme */
+.app.light .location-item {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: left;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     color: #333;
 }
 
-.location-item:hover {
-    transform: translateY(-5px);
+.app.light .location-item:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Dark Theme */
+.app.dark .location-item {
+    background-color: #2b2b2b;
+    border: 1px solid #444;
+    color: #ddd;
+}
+
+.app.dark .location-item:hover {
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Common Styles */
+.location-item {
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.location-item h3 {
+    margin-top: 0;
+}
+
+.location-item .address,
+.location-item .distance,
+.location-item .information {
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.location-item .information a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.location-item .information a:hover {
+    text-decoration: underline;
+}
+/* 
 .address {
     font-size: 14px;
     color: #555;
@@ -82,4 +116,4 @@
     overflow-wrap: anywhere;
     margin-bottom: 10px;
 }
-
+ */
