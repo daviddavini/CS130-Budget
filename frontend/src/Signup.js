@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Typography, notification } from 'antd';
 import { useContext } from 'react';
+import { AuthContext } from './AuthContext';
 import { ThemeContext } from './App';
 import piggy from './assets/Piggy.png';
 import './Login.css';
@@ -10,6 +11,7 @@ const { Title } = Typography;
 
 const Signup = () => {
     const { theme } = useContext(ThemeContext);
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const onFinish = async (values) => {
@@ -31,8 +33,7 @@ const Signup = () => {
 	    }
 	    const data = await response.json();
 	    if (data.token) {
-		localStorage.setItem('token', data.token);
-		console.log("token: ", localStorage.getItem('token'))
+		login(data.token, 'manual')
 	    } else if (data.error) {
 		throw new Error('Authentication error:', data.error);
 	    }
