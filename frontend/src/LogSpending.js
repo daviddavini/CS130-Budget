@@ -31,8 +31,8 @@ const LogSpending = () => {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    setReceipt(file);
+      const file = e.target.files[0];
+      setReceipt(file);
   };
 
     const handleManualInputClick = () => {
@@ -41,8 +41,10 @@ const LogSpending = () => {
     };
 
     const handleUploadReceiptClick = () => {
+	setReceipt(null);
 	setIsManual(false);
 	setError(null); // Reset error when switching to upload receipt
+	
     };
 
   const handleSubmit = async (e) => {
@@ -206,7 +208,12 @@ const LogSpending = () => {
         ) : (
           <div className="upload-receipt">
             <Form.Item label="Upload Receipt">
-              <Input type="file" onChange={handleFileUpload} />
+		<Input
+		    type="file"
+		    onChange={handleFileUpload}
+		    key={isManual ? 'manual' : 'upload'}
+		    accept="image/*"
+		/>
             </Form.Item>
             <Button type="primary" htmlType="submit">Submit</Button>
           </div>
