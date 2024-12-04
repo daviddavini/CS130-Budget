@@ -26,6 +26,9 @@ When we build for production, we gotta do
 npm run build
 ```
 
+## Documentation
+You can find the full documentation [here](budgeter/docs/build/html/index.html).
+
 # Repository Template
 
 [![Build Status](https://app.travis-ci.com/melaasar/cs130-template.svg?branch=master)](https://app.travis-ci.com/github/melaasar/cs130-template)

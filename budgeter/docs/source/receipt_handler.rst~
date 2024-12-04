@@ -1,0 +1,7 @@
+Receipt Handler Module
+=======================
+
+.. automodule:: myapp.handlers.receipt_handler
+   :members:
+   :undoc-members:
+   :show-inheritance:

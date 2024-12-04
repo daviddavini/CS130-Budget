@@ -21,6 +21,20 @@ class SignUpSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        """
+        Creates a new user instance.
+
+        **Important:** The password will be hashed before saving.
+
+        :param validated_data: The validated data containing the username and password.
+        :return: The created user instance.
+        
+        Usage example:
+        
+        >>> serializer = SignUpSerializer(data={'username': 'newuser', 'password': 'mypassword'})
+        >>> if serializer.is_valid():
+        ...     user = serializer.save()
+        """
         user = User(
             username=validated_data['username']
         )
@@ -29,7 +43,13 @@ class SignUpSerializer(serializers.ModelSerializer):
         return user
     
     def validate_username(self, value):
-        """Check that the username is not already taken."""
+        """
+        Check that the username is not already taken.
+
+        :param value: The username to validate.
+        :raises serializers.ValidationError: If the username is already taken.
+        :return: The validated username.
+        """
         if User.objects.filter(username=value).exists():
             raise serializers.ValidationError("This username is already taken.")
         return value
@@ -40,6 +60,19 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
     def validate(self, attrs):
+        """
+        Validate the login credentials.
+
+        :param attrs: The dictionary containing username and password.
+        :raises serializers.ValidationError: If the credentials are invalid.
+        :return: The validated attributes including the authenticated user.
+        
+        Usage example:
+        
+        >>> serializer = LoginSerializer(data={'username': 'existinguser', 'password': 'mypassword'})
+        >>> if serializer.is_valid():
+        ...     user = serializer.validated_data['user']
+        """
         username = attrs.get('username')
         password = attrs.get('password')
 
