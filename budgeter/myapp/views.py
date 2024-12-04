@@ -23,11 +23,16 @@ import json
 
 @api_view(['POST'])
 def manual_auth(request):
+    """
+    Create new user account based on signup information and returns user token
+    """
+    # parse binary data into json
     decoded = request.body.decode('utf-8')
     try:
         data = json.loads(decoded)
     except json.JSONDecodeError:
         return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
+    
     try:
         serializer = SignUpSerializer(data=data)
         print(serializer)
@@ -42,6 +47,10 @@ def manual_auth(request):
 
 @api_view(['POST'])
 def login_view(request):
+    """
+    Log in existing user based on given username and password and returns user token
+    """
+    # parse binary data into json
     decoded = request.body.decode('utf-8')
     try:
         data = json.loads(decoded)
@@ -63,6 +72,9 @@ def login_view(request):
 
 @api_view(['GET'])
 def sample_api(request):
+    """
+    Overpass and wikidata API to obtain nearby stores information
+    """
     radius = request.GET.get('radius')
     lat = request.GET.get('lat')
     lon = request.GET.get('lon')
@@ -87,6 +99,9 @@ def sample_api(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def manual_input(request):
+    """
+    Logs a single spending (of a single category) into database for the user
+    """
     user = request.user
     amount = request.GET.get('amount')
     category = request.GET.get('category')
@@ -112,6 +127,12 @@ def manual_input(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def receipt_scanning(request):
+    """
+    Logs multiple spendings of possibly varying categories into database
+    items obtained from receipt
+    categories obtained from Google Gemini API
+    date is assumed to be the current date
+    """
     if 'image' not in request.FILES:
         return Response({'error': 'No image file provided'})
 
@@ -161,6 +182,9 @@ def receipt_scanning(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def set_goal(request):
+    """
+    Store spending goals in database for every spending category for the user
+    """
     decoded = request.body.decode('utf-8')
     try:
         data = json.loads(decoded)
@@ -177,20 +201,11 @@ def set_goal(request):
     print(Goal.objects.all())
     return Response({'status': 'success'})
     
-
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def remove_goal(request):
-    try:
-        goal = Goal.objects.get(id=id)  # Get the goal by ID
-        goal.delete()  # Delete the goal from the database
-        return Response({'error': 'None'})
-    except Goal.DoesNotExist:
-        return Response({'error': 'Goal not found'})
-
 @api_view(['POST'])
 def google_auth(request):
+    """
+    Authenticate user using google API and returning a jwt token
+    """
     token = request.data.get('token')
     if not token:
         return Response({'error': 'No token provided'}, status=status.HTTP_400_BAD_REQUEST)
@@ -232,6 +247,10 @@ def google_auth(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_visualization(request):
+    """
+    Obtain user's spending information and spending goals from database and return their summary
+    summaries are information necessary to create charts in front end
+    """
     user = request.user
     start = request.GET.get('start')
     end = request.GET.get('end')

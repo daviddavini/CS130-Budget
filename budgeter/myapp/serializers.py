@@ -6,13 +6,14 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
 
-
+# to create new users
 class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password')
         extra_kwargs = {
             'username': {
+                # ensuring no duplicate user names
                 'validators': [UniqueValidator(queryset=User.objects.all())],  # Ensure username is unique
                 'max_length': 150,  # Set max length if needed
             },
@@ -32,7 +33,8 @@ class SignUpSerializer(serializers.ModelSerializer):
         if User.objects.filter(username=value).exists():
             raise serializers.ValidationError("This username is already taken.")
         return value
-    
+
+# to log in existing users
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(style={'input_type': 'password'}, write_only=True)

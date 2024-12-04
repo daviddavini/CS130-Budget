@@ -7,6 +7,9 @@ class OCRHandler():
         pass
 
     def parse_receipt_image(self, image_path):
+        """
+        uses OCRSpace API to obtain text from image, returns json documenting text lines and their positions in image.
+        """
         api_url = "https://api.ocr.space/parse/image"
         payload = {'apikey': settings.OCR_API_KEY, 
                 'isOverlayRequired': 'true', 

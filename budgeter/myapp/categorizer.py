@@ -9,6 +9,9 @@ class Categorizer():
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
     def categorize_item(self, item: str):
+        """
+        Classify a receipt item (string) into one of the categories specified in the SpendingType enum defined in models
+        """
         result = self.model.generate_content(
             "What category of spending does this item fall under: '" + item + "'. "
             "Here are some examples of categories and items:\n"
@@ -21,7 +24,7 @@ class Categorizer():
             "- Education: Tuition, Books\n"
             "- Entertainment: Movies, Concerts\n"
             "- Clothing: Apparel, Shoes\n"
-            "- Personal Care: Haircuts, Makeup, Toiletries\n"
+            "- Personal Care: Toiletries, Haircuts, Makeup\n"
             "- Pet: Pet Food, Vet Visits\n"
             "- Travel: Flights, Hotels\n"
             "- Gifting: Gifts for Others\n"
