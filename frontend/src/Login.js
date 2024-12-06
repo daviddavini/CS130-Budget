@@ -10,51 +10,61 @@ import './Login.css';
 
 const { Title } = Typography;
 
+/**
+ * Login component provides a user interface for logging in with username and password
+ * or using Google OAuth. It includes form validation, error handling, and user notifications.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Login component.
+ */
 const Login = () => {
     const { theme } = useContext(ThemeContext);  // Access theme from context
-    const { login } = useContext(AuthContext);
+    const { login } = useContext(AuthContext);  // Access login function from AuthContext
     const navigate = useNavigate();
-    
+
+    /**
+     * Handles the form submission for login.
+     *
+     * @async
+     * @param {Object} values - The form values containing `username` and `password`.
+     */
     const onFinish = async (values) => {
-	const signinData = {
-	    username: values.username,
+        const signinData = {
+            username: values.username,
 	    password: values.password
 	}
         // For simplicity, just log the user data
         console.log('Received values:', signinData);
-	try {
-	    const response = await fetch('/api/login/', {
-		method: 'POST',
-		headers: {
-		    'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(signinData),
-	    });
-	    if (!response.ok) {
-		throw new Error('Signin Failed');
-	    }
-	    const data = await response.json();
-	    if (data.token) {
-		login(data.token, 'manual')
-	    } else if (data.error) {
-		throw new Error('Authentication error:', data.error);
-	    }
-	    notification.success({
-		message: 'Login Successful',
-		description: `Welcome back, ${values.username}!`,
-	    });
-	    
+        try {
+            const response = await fetch('/api/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signinData),
+            });
+            if (!response.ok) {
+                throw new Error('Signin Failed');
+            }
+            const data = await response.json();
+            if (data.token) {
+                login(data.token, 'manual');
+            } else if (data.error) {
+                throw new Error('Authentication error:', data.error);
+            }
+            notification.success({
+                message: 'Login Successful',
+                description: `Welcome back, ${values.username}!`,
+            });
             navigate('/');
-	} catch(error) {
-	    console.error("Error during sign in:", error);
-	    notification.warning({
-		message: 'Login Failed',
-		description: `Incorrect username or password`,
-	    });
-	}
-
-        
-    }; 
+        } catch (error) {
+            console.error('Error during sign in:', error);
+            notification.warning({
+                message: 'Login Failed',
+                description: `Incorrect username or password`,
+            });
+        }
+    };
 
     return (
         <div className={`login-block ${theme}`} style={{ padding: '50px', maxWidth: '600px', margin: 'auto' }}>

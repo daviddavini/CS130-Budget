@@ -20,33 +20,40 @@ const COLORS = [
     'rgba(128, 77, 255, 0.8)'    // #804DFF
 ];
 
-
+/**
+ * ExpensePieChart component displays a pie chart representation of expense data.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Object} props.data - The expense data where keys are categories and values are amounts.
+ *                               Example: { Food: 200, Housing: 500, Transportation: 100 }
+ * @returns {JSX.Element} The rendered ExpensePieChart component.
+ */
 const ExpensePieChart = ({ data }) => {
     const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
     return (
-	<>
-	    <h3> Expense Distribution </h3>
-	    <div className="pie-chart">
-		
-		<PieChart width={400} height={400}>
-		    <Pie
-			data={chartData}
-			cx={200}
-			cy={200}
-			labelLine={false}
-			outerRadius={80}
-			fill="#8884d8"
-			dataKey="value"
-			label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-		    >
-			{chartData.map((entry, index) => (
-			    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-			))}
-		    </Pie>
-		    <Legend />
-		</PieChart>
-	    </div>
-	</>
+        <>
+            <h3> Expense Distribution </h3>
+            <div className="pie-chart">
+                <PieChart width={400} height={400}>
+                    <Pie
+                        data={chartData}
+                        cx={200}
+                        cy={200}
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                        {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Legend />
+                </PieChart>
+            </div>
+        </>
     );
 };
 

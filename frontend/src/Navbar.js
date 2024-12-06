@@ -4,14 +4,29 @@ import './Navbar.css';
 import piggy from './assets/Piggy.png';
 import title from './assets/Clever Cash (5).png';
 
+/**
+ * Navbar component provides a responsive sidebar navigation menu for the application.
+ * It includes links to various pages and submenus for additional options.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Navbar component.
+ */
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [subMenuOpen, setSubMenuOpen] = useState({});
 
+    /**
+     * Toggles the visibility of the sidebar menu.
+     */
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
 
+    /**
+     * Toggles the visibility of a specific submenu.
+     *
+     * @param {string} menu - The key of the submenu to toggle.
+     */
     const toggleSubMenu = (menu) => {
         setSubMenuOpen(prevState => ({
             ...prevState,
@@ -51,9 +66,9 @@ const Navbar = () => {
                     <li><Link style={{ textAlign: 'left'}} to="/visualize" onClick={() => setIsOpen(false)}>📊 View Your Summary </Link></li>
                     <li><img
                         style={{ paddingTop: '25px'}}
-                        src={piggy}
-                        alt=""
-                        className="login-piggy"
+                            src={piggy}
+                            alt=""
+                            className="login-piggy"
                     /></li>
                 </ul>
             </nav>

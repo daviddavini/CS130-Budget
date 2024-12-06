@@ -16,11 +16,24 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const { Title } = Typography;
 
+/**
+ * ConfirmBudgetPlan component allows users to confirm or adjust their budget allocations across various categories.
+ * It presents a Doughnut chart to visualize allocations and provides sliders and input fields to adjust them.
+ *
+ * On submission, it attempts to save the budget plan via a backend API call.
+ *
+ * @component
+ * @example
+ * return <ConfirmBudgetPlan />;
+ *
+ * @returns {JSX.Element} A form and chart interface for finalizing a user's budget plan.
+ */
 const ConfirmBudgetPlan = () => {
-    const income = localStorage.getItem('income'); // Placeholder for income, get value from account
+    const income = localStorage.getItem('income'); // Placeholder for income, retrieved from local storage
     const theme = useContext(ThemeContext);
     const [form] = Form.useForm();
     const navigate = useNavigate();
+
     const [categoryLimits, setCategoryLimit] = useState({
         savings: income * 0.2,
         housing: income * 0.3,
@@ -39,10 +52,7 @@ const ConfirmBudgetPlan = () => {
         miscellaneous: 0,
     });
 
-    
-
     const remainingBudget = income - Object.values(categoryLimits).reduce((sum, value) => sum + value, 0);
-
 
     const data = {
         labels: Object.keys(categoryLimits),
@@ -74,30 +84,31 @@ const ConfirmBudgetPlan = () => {
         ],
     };
 
-
     const options = {
-	plugins: {
-	    legend: {
-		position: 'left',
-		labels : {
-		    color: '#00AFCF',
-		},
-	    },
-	},
+        plugins: {
+            legend: {
+                position: 'left',
+                labels : {
+                    color: '#00AFCF',
+                },
+            },
+        },
     };
 
-
+    /**
+     * Updates the specified category limit based on user input from the sliders or input fields.
+     * Ensures that the category does not exceed the remaining available budget.
+     *
+     * @param {string} category - The category to update.
+     * @param {number} newValue - The new budget value for the specified category.
+     */
     const handleSliderChange = (category, newValue) => {
         setCategoryLimit(prevLimits => {
-            // Calculate the total of all other categories
             const otherCategoriesTotal = Object.entries(prevLimits)
                 .filter(([key]) => key !== category)
                 .reduce((sum, [_, value]) => sum + value, 0);
 
-            // Calculate the maximum allowed value for this category
             const maxAllowedValue = income - otherCategoriesTotal;
-
-            // Ensure the new value doesn't exceed the maximum allowed
             const adjustedValue = Math.min(newValue, maxAllowedValue);
 
             return {
@@ -107,7 +118,15 @@ const ConfirmBudgetPlan = () => {
         });
     };
 
-
+    /**
+     * Handles form submission by packaging the category limits into a budget plan,
+     * calling the backend API to save them, and on success, navigating to the home page.
+     * If the user is not logged in or the backend responds with an error, it logs the error.
+     *
+     * @async
+     * @function
+     * @param {Object} values - The current form values.
+     */
     const onFinish = async (values) => {
         console.log('Budget Plan:', values);
         const budgetPlan = Object.entries(categoryLimits).map(([category, amount]) => [category, amount]);

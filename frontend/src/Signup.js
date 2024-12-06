@@ -9,46 +9,59 @@ import './Login.css';
 
 const { Title } = Typography;
 
+/**
+ * Signup component allows users to create a new account by providing a username and password.
+ * It includes form validation, error handling, and user notifications upon success or failure.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Signup component.
+ */
 const Signup = () => {
-    const { theme } = useContext(ThemeContext);
-    const { login } = useContext(AuthContext);
+    const { theme } = useContext(ThemeContext); // Access theme from ThemeContext
+    const { login } = useContext(AuthContext); // Access login function from AuthContext
     const navigate = useNavigate();
 
+    /**
+     * Handles the form submission for account creation.
+     *
+     * @async
+     * @param {Object} values - The form values containing `username` and `password`.
+     */
     const onFinish = async (values) => {
-	const signupData = {
-	    username: values.username,
-	    password: values.password
-	};
+        const signupData = {
+            username: values.username,
+            password: values.password,
+        };
         console.log('Sign-Up Data:', signupData);
-	try {
-	    const response = await fetch('/api/signup/', {
-		method: 'POST',
-		headers: {
-		    'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(signupData),
-	    });
-	    if (!response.ok) {
-		throw new Error('Signup Failed');
-	    }
-	    const data = await response.json();
-	    if (data.token) {
-		login(data.token, 'manual')
-	    } else if (data.error) {
-		throw new Error('Authentication error:', data.error);
-	    }
+        try {
+            const response = await fetch('/api/signup/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signupData),
+            });
+            if (!response.ok) {
+                throw new Error('Signup Failed');
+            }
+            const data = await response.json();
+            if (data.token) {
+                login(data.token, 'manual');
+            } else if (data.error) {
+                throw new Error('Authentication error:', data.error);
+            }
             notification.success({
-		message: 'Account Created',
-		description: `Welcome, ${values.username}! Your account has been successfully created.`,
+                message: 'Account Created',
+                description: `Welcome, ${values.username}! Your account has been successfully created.`,
             });
             navigate('/budgetplan');
-	} catch(error) {
-	    console.error("Error during manual sign up:", error);
-	    notification.warning({
-		message: 'Sign up Failed',
-		description: `Your username has been already taken`,
-	    });
-	}
+        } catch (error) {
+            console.error("Error during manual sign up:", error);
+            notification.warning({
+                message: 'Sign up Failed',
+                description: `Your username has been already taken`,
+            });
+        }
     };
 
     return (
@@ -102,7 +115,7 @@ const Signup = () => {
                         Start Saving!
                     </Button>
                     <Link to="/login">
-                        <Button type="default" htmlType='button' style={{marginTop: '15px'}}>
+                        <Button type="default" htmlType='button' style={{ marginTop: '15px' }}>
                             ← Back
                         </Button>
                     </Link>

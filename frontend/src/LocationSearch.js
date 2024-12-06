@@ -2,11 +2,22 @@ import React, { useState } from 'react';
 import LocationResults from './LocationResults';
 import './LocationSearch.css';
 
+/**
+ * LocationSearch is a React component that allows users to fetch their current location
+ * using the Geolocation API and display nearby business results.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered LocationSearch component.
+ */
 function LocationSearch() {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles the process of fetching the user's current location using the browser's Geolocation API.
+   * Updates the `location` state with the latitude and longitude or sets an error if the process fails.
+   */
   const handleGetLocation = () => {
     setLoading(true);
     setError(null);

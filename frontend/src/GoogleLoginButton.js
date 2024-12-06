@@ -6,14 +6,32 @@ import { useNavigate } from 'react-router-dom';
 import './GoogleLoginButton.css';
 import './Login.css'; 
 
+/**
+ * GoogleLoginButton component handles user authentication via Google OAuth.
+ * On successful login, it retrieves a token from the backend and navigates the user to the home page.
+ *
+ * @component
+ * @example
+ * return <GoogleLoginButton />;
+ *
+ * @returns {JSX.Element} A button that initiates Google login flow.
+ */
 function GoogleLoginButton() {
   const { theme } = useContext(ThemeContext); 
   const { login } = useContext(AuthContext);
 
   const navigate = useNavigate();
+
+  /**
+   * Handles the successful login response from Google.
+   * Sends the credential to the backend for further verification and token retrieval.
+   *
+   * @param {Object} credentialResponse - The response object returned from Google OAuth on success.
+   * @param {string} credentialResponse.credential - The user's OAuth credential token.
+   */
   const handleSuccess = (credentialResponse) => {
     console.log('Login Success:', credentialResponse);
-      login(credentialResponse.credential, 'google');
+    login(credentialResponse.credential, 'google');
     fetch('/api/google-auth/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,6 +56,9 @@ function GoogleLoginButton() {
       .catch((error) => console.error('Error:', error));
   };
 
+  /**
+   * Handles the failed login attempt from Google OAuth.
+   */
   const handleFailure = () => {
     console.error('Login Failed');
   };
