@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Home.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Home.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from 'react';
+import ExpensePieChart from './PieChart';
+import ExpenseBarChart from './BarChart';
+import ExpenseLineChart from './LineChart';
+import GoalComparisonChart from './GoalComparisonChart';
+
+/**
+ * Home component serves as the dashboard displaying the current month's expense summary.
+ * It fetches expense data, goal summaries, and date-specific expenses from the backend
+ * and visualizes them using various chart components.
+ *
+ * @component
+ * @example
+ * return &lt;Home />;
+ *
+ * @returns {JSX.Element} The Home dashboard with expense summaries and visualizations.
+ */
+const Home = () => {
+    const [currentExpense, setCurrentExpense] = useState(null);
+    const [dateExpenses, setDateExpenses] = useState(null);
+    const [goals, setGoals] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetchExpenses();
+    }, []);
+
+    /**
+     * Fetches the current month's expense data, goal summaries, and date-specific expenses
+     * from the backend API. It handles authentication by retrieving the token from local storage
+     * and updates the component's state accordingly.
+     *
+     * @async
+     * @function
+     * @returns {Promise&lt;void>} Resolves when the data fetching is complete.
+     * @throws Will throw an error if the user is not logged in or if the fetch request fails.
+     */
+    const fetchExpenses = async () => {
+        setError(null);
+        try {
+            if (localStorage.getItem('token') === null) {
+                throw new Error('You have not logged in yet!');
+            }
+            const currentDate = new Date();
+            const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            console.log(currentMonthStart, currentDate);
+            const response = await fetch(`/api/visualize/?start=${currentMonthStart.toISOString().split('T')[0]}&amp;end=${currentDate.toISOString().split('T')[0]}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Token ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch expenses');
+            }
+            const data = await response.json();
+            setCurrentExpense(data.summary);
+            setGoals(data.goal_summary);
+            setDateExpenses(data.date_summary);
+            console.log(goals);
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    if (error) return &lt;p className="error">{error}&lt;/p>;
+    
+    return (
+        &lt;div className="home-page">
+            &lt;h1>Current Month Summary&lt;/h1>
+            {currentExpense &amp;&amp; Object.keys(currentExpense).length > 0 ?
+             (
+                 &lt;>
+                     {goals &amp;&amp; &lt;GoalComparisonChart expenses={currentExpense} goals={goals} />}
+                     &lt;ExpenseLineChart data={dateExpenses} />
+                     &lt;ExpensePieChart data={currentExpense} />
+                     &lt;ExpenseBarChart data={currentExpense} />
+                     
+                 &lt;/>
+             ) : (
+                 &lt;p>No expenses for the current month.&lt;/p>
+             )}
+        &lt;/div>
+    );
+};
+
+export default Home;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myapp.tests &#8212; Clever Cash Beta documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=c5864913"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for myapp.tests</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django.test</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span> <span class="nn">.ocr_service</span> <span class="kn">import</span> <span class="n">OCRHandler</span>
+<span class="kn">from</span> <span class="nn">.categorizer</span> <span class="kn">import</span> <span class="n">Categorizer</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Goal</span>
+
+
+<div class="viewcode-block" id="OCRServiceTest">
+<a class="viewcode-back" href="../../myapp.html#myapp.tests.OCRServiceTest">[docs]</a>
+<span class="k">class</span> <span class="nc">OCRServiceTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="OCRServiceTest.setUpClass">
+<a class="viewcode-back" href="../../myapp.html#myapp.tests.OCRServiceTest.setUpClass">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setUpClass</span><span class="p">()</span>
+        <span class="n">load_dotenv</span><span class="p">()</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="s1">&#39;myapp/utils/sample_receipts/standard-grocery-receipt-template.png&#39;</span>  <span class="c1"># Sample Receipt</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">image_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Image file does not exist: </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">OCR</span> <span class="o">=</span> <span class="n">OCRHandler</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="OCRServiceTest.test_parse_receipt_image">
+<a class="viewcode-back" href="../../myapp.html#myapp.tests.OCRServiceTest.test_parse_receipt_image">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_parse_receipt_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the OCR function returns expected results.&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OCR</span><span class="o">.</span><span class="n">parse_receipt_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>  <span class="c1"># Check if the result is a dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s1">&#39;ParsedResults&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>  <span class="c1"># Check if &#39;ParsedResults&#39; key exists in response</span></div>
+</div>
+
+        <span class="c1"># Write the JSON result to a file</span>
+        <span class="c1">#with open(&#39;myapp/utils/test_outputs/ocr_results.json&#39;, &#39;w&#39;) as json_file:</span>
+            <span class="c1">#json.dump(result, json_file, indent=4)  # Pretty print with indentation</span>
+
+
+<div class="viewcode-block" id="CategorizerTest">
+<a class="viewcode-back" href="../../myapp.html#myapp.tests.CategorizerTest">[docs]</a>
+<span class="k">class</span> <span class="nc">CategorizerTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="CategorizerTest.setUpClass">
+<a class="viewcode-back" href="../../myapp.html#myapp.tests.CategorizerTest.setUpClass">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setUpClass</span><span class="p">()</span>
+        <span class="c1"># Instantiate the Categorizer class</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">categorizer</span> <span class="o">=</span> <span class="n">Categorizer</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="CategorizerTest.test_categorize_item">
+<a class="viewcode-back" href="../../myapp.html#myapp.tests.CategorizerTest.test_categorize_item">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_categorize_item</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the categorize_item function returns a valid category.&quot;&quot;&quot;</span>
+        
+        <span class="n">expected_result</span> <span class="o">=</span> <span class="s2">&quot;Food&quot;</span>
+        <span class="n">category</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorizer</span><span class="o">.</span><span class="n">categorize_item</span><span class="p">(</span><span class="s2">&quot;eggs&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">expected_result</span><span class="p">)</span>  <span class="c1"># Check if the returned category is as expected</span></div>
+</div>
+
+<span class="w">        </span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">class GoalModelTest(TestCase):</span>
+<span class="sd">    def setUp(self):</span>
+<span class="sd">        Goal.objects.create(user=&quot;John Doe&quot;, amount=1000.00, start_date=&quot;2024-01-01&quot;, end_date=&quot;2024-12-31&quot;, spending_type=&quot;Housing&quot;)</span>
+
+<span class="sd">    def test_goal_creation(self):</span>
+<span class="sd">        goal = Goal.objects.get(user=&quot;John Doe&quot;)</span>
+<span class="sd">        self.assertEqual(goal.amount, 1000.00)</span>
+<span class="sd">        self.assertEqual(goal.spending_type, &quot;Housing&quot;)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Clever Cash</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">myapp</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Anthony Guo, Braeden Bethencourt, David Davini, Edgar Ayala, Nate Carman.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

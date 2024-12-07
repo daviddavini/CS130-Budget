@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: BarChart.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: BarChart.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useContext } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
+import { ThemeContext } from './App';
+import './Visualization.css';
+
+
+/**
+ * An array of RGBA color strings used to color the bars in the chart.
+ * Each entry corresponds to a potential bar in the chart.
+ */
+const COLORS = [
+    'rgba(255, 87, 51, 0.8)',   // #FF5733
+    'rgba(51, 255, 87, 0.8)',   // #33FF57
+    'rgba(255, 51, 161, 0.8)',  // #FF33A1
+    'rgba(255, 195, 0, 0.8)',   // #FFC300
+    'rgba(51, 87, 255, 0.8)',   // #3357FF
+    'rgba(170, 199, 134, 0.8)', // #AAC786
+    'rgba(144, 12, 63, 0.8)',   // #900C3F
+    'rgba(88, 24, 69, 0.8)',    // #581845
+    'rgba(255, 165, 0, 0.8)',   // #FFA500
+    'rgba(75, 192, 192, 0.8)',  // #4BC0C0
+    'rgba(153, 102, 255, 0.8)', // #9966FF
+    'rgba(255, 99, 132, 0.8)',  // #FF6384
+    'rgba(54, 162, 235, 0.8)',  // #36A2EB
+    'rgba(255, 206, 86, 0.8)',  // #FFCE56
+    'rgba(128, 77, 255, 0.8)'   // #804DFF
+];
+
+/**
+ * ExpenseBarChart component renders a bar chart of expenses using Recharts.
+ * It takes in a `data` object where keys represent categories and values represent amounts.
+ *
+ * @component
+ * @example
+ * const expenseData = {
+ *   Groceries: 200,
+ *   Rent: 1200,
+ *   Utilities: 150
+ * };
+ * return &lt;ExpenseBarChart data={expenseData} />;
+ *
+ * @param {Object} props - The component props.
+ * @param {Object} props.data - A mapping of expense categories to their values.
+ * @returns {JSX.Element} A bar chart component visualizing expense data.
+ */
+const ExpenseBarChart = ({ data }) => {
+    const { theme } = useContext(ThemeContext);
+    const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
+    const axisLabelColor = theme === "dark" ? '#ddd' : '#222';
+    return (
+        &lt;div>
+            &lt;h3> Expense Breakdown &lt;/h3>
+            &lt;div className='bar-graph'>
+                &lt;BarChart width={600} height={300} data={chartData}>
+                    &lt;CartesianGrid strokeDasharray="3 3" />
+                    &lt;XAxis dataKey="name" tick={{ fill: axisLabelColor, fontSize: 10 }} angle={-35} textAnchor="end" />
+                    &lt;YAxis tick={{ fill: axisLabelColor }} />
+                    &lt;Tooltip />
+                    &lt;Legend className='axis-label' />
+                    &lt;Bar dataKey="value" fill="#8884d8">
+                        {chartData.map((entry, index) => (
+                            &lt;Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    &lt;/Bar>
+                &lt;/BarChart>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default ExpenseBarChart;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

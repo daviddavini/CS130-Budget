@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: LocationResults.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: LocationResults.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect, useContext } from 'react';
+import { Typography, Spin, Alert } from 'antd';
+import { ThemeContext } from './App';
+import './LocationResults.css';
+
+const { Text } = Typography;
+
+/**
+ * Component representing an individual location item in the search results.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.name - The name of the location.
+ * @param {string} props.address - The address of the location.
+ * @param {number} props.distance - The distance to the location in kilometers.
+ * @param {string} [props.phone] - The phone number of the location (optional).
+ * @param {string} [props.website] - The website URL of the location (optional).
+ * @param {string} [props.opening_hours] - The opening hours of the location (optional).
+ * @param {string} [props.brand] - The brand associated with the location (optional).
+ * @param {Object} [props.businessInfo] - Additional information about the business (optional).
+ * @param {Array} [props.businessInfo.instance_of] - Array of identifiers for the business.
+ * @param {number} [props.businessInfo.number_of_branches] - The number of branches of the business.
+ * @returns {JSX.Element} The rendered LocationItem component.
+ */
+const LocationItem = ({ name, address, distance, phone, website, opening_hours, brand, businessInfo }) => {
+  if (businessInfo) {
+    var labels = businessInfo['instance_of'].map(item => item.label);
+    var commaSeparatedLabels = labels.join(', ');
+  }
+  return (
+    &lt;div className={`location-item ${businessInfo ? 'chain-business' : ''}`}>
+      &lt;h3>{name}&lt;/h3>
+      &lt;p className="address">{address}&lt;/p>
+      &lt;div className="tags">
+        &lt;div className="information">Phone: {phone || 'N/A'}&lt;/div>
+        &lt;div className="information">Website: &lt;a href={website} target="_blank" rel="noopener noreferrer">{website || 'N/A'}&lt;/a>&lt;/div>
+        &lt;div className="information">Hours: {opening_hours || 'N/A'}&lt;/div>
+      &lt;/div>
+      &lt;p className="distance">&lt;strong>Distance:&lt;/strong> {distance} km&lt;/p>
+      {businessInfo &amp;&amp; (
+        &lt;div className="warning">&lt;Alert message="Warning:" description="This is a chain business!" type='warning' showIcon>&lt;/Alert>&lt;/div>
+      )}
+      {businessInfo &amp;&amp; businessInfo["number_of_branches"] &amp;&amp; (
+        &lt;div className="warning-detail">&lt;strong># Branches:&lt;/strong> {businessInfo["number_of_branches"]} &lt;/div>
+      )}
+      {businessInfo &amp;&amp; businessInfo["instance_of"] &amp;&amp; (
+        &lt;div className="warning-detail">&lt;strong>Identifiers:&lt;/strong> {commaSeparatedLabels} &lt;/div>
+      )}
+    &lt;/div>
+  );
+};
+
+/**
+ * Component for displaying search results of locations based on given latitude, longitude, and radius.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {number} props.lat - Latitude of the search location.
+ * @param {number} props.lon - Longitude of the search location.
+ * @param {number} props.radius - Radius for the search in kilometers.
+ * @returns {JSX.Element} The rendered LocationResults component.
+ */
+const LocationResults = ({ lat, lon, radius }) => {
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const { theme } = useContext(ThemeContext);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `/api/sample?lat=${lat}&amp;lon=${lon}&amp;radius=${radius}`
+        );
+        if (!response.ok) {
+          throw new Error('Unable to fetch location data.');
+        }
+        const data = await response.json();
+        setPlaces(data.results);
+        console.log(data.results);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [lat, lon, radius]);
+
+  // Loading and Error Messages
+  if (loading) return &lt;div className="loading">
+    &lt;Text
+      style={{
+        fontSize: '20px',
+        color: theme === 'dark' ? 'white' : 'black',
+        marginBottom: '10px'
+      }}
+    >
+    Loading...
+    &lt;/Text>
+    &lt;Spin />
+  &lt;/div>;
+
+  if (error) return &lt;div>
+    &lt;Alert 
+      message="Error:" 
+      description={error} 
+      type="error" 
+      showIcon
+    />
+  &lt;/div>;
+
+  return (
+    &lt;div className="location-results">
+      &lt;h2>Search Results&lt;/h2>
+      {places.length === 0 ? (
+        &lt;p>No results found&lt;/p>
+      ) : (
+        &lt;div className="location-list">
+          {places
+            .sort((a, b) => a.distance_km - b.distance_km)
+            .map((place, index) => (
+              place.name &amp;&amp;
+              &lt;LocationItem
+                key={index}
+                name={place.name}
+                phone={place.phone}
+                website={place.website}
+                opening_hours={place.opening_hours}
+                distance={place.distance_km.toFixed(3)}
+                businessInfo={place.business_info}
+              />
+            ))}
+        &lt;/div>
+      )}
+    &lt;/div>
+  );
+};
+
+export default LocationResults;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

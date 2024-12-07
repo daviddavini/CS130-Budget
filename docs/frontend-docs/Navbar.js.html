@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Navbar.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Navbar.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './Navbar.css';
+import piggy from './assets/Piggy.png';
+import title from './assets/Clever Cash (5).png';
+
+/**
+ * Navbar component provides a responsive sidebar navigation menu for the application.
+ * It includes links to various pages and submenus for additional options.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Navbar component.
+ */
+const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [subMenuOpen, setSubMenuOpen] = useState({});
+
+    /**
+     * Toggles the visibility of the sidebar menu.
+     */
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
+    /**
+     * Toggles the visibility of a specific submenu.
+     *
+     * @param {string} menu - The key of the submenu to toggle.
+     */
+    const toggleSubMenu = (menu) => {
+        setSubMenuOpen(prevState => ({
+            ...prevState,
+            [menu]: !prevState[menu]
+        }));
+    };
+
+    return (
+        &lt;>
+            &lt;nav className={`sidebar ${isOpen ? 'open' : ''}`}>
+                &lt;ul>
+                &lt;li>&lt;div style={{fontSize: '30px', paddingBottom:'20px'}}>Clever Cash&lt;/div>&lt;/li>
+                    &lt;li>&lt;Link style={{ textAlign: 'left'}} to="/" onClick={() => setIsOpen(false)}>🏠 Home&lt;/Link>&lt;/li>
+                    &lt;li>&lt;Link style={{ textAlign: 'left'}} to="/shops" onClick={() => setIsOpen(false)}>📍 Local Businesses&lt;/Link>&lt;/li>
+                    &lt;li>
+                        &lt;div
+                            onClick={() => toggleSubMenu('budgetplan')}
+                            style={{
+                                fontSize: '18px',
+                                cursor: subMenuOpen.budgetplan ? '-moz-grab' : 'pointer',
+                                textAlign: 'left',
+                                marginLeft: '15px'
+                            }}
+                        >
+                            &lt;span style={{ marginRight: '10px', fontSize: '15px', cursor: subMenuOpen.budgetplan ? '-moz-grab' : 'pointer' }}>
+                                {subMenuOpen.budgetplan ? '▼' : '▶'}
+                            &lt;/span>
+                            My Budget
+                        &lt;/div>
+                        {subMenuOpen.budgetplan &amp;&amp; (
+                            &lt;ul style={{ paddingLeft: '30px' }} className="sub-menu">
+                                &lt;li>&lt;Link style={{ textAlign: 'left', fontSize: '15px' }} to="/log" onClick={() => setIsOpen(false)}> Log Your Spendings &lt;/Link>&lt;/li>
+                                &lt;li>&lt;Link style={{ textAlign: 'left', fontSize: '15px' }} to="/budgetplan" onClick={() => setIsOpen(false)}> Set Your Budget &lt;/Link>&lt;/li>
+                            &lt;/ul>
+                        )}
+                    &lt;/li>
+                    &lt;li>&lt;Link style={{ textAlign: 'left'}} to="/visualize" onClick={() => setIsOpen(false)}>📊 View Your Summary &lt;/Link>&lt;/li>
+                    &lt;li>&lt;img
+                        style={{ paddingTop: '25px'}}
+                            src={piggy}
+                            alt=""
+                            className="login-piggy"
+                    />&lt;/li>
+                &lt;/ul>
+            &lt;/nav>
+            &lt;div className="hamburger-menu" onClick={toggleMenu}>
+                ☰
+            &lt;/div>
+        &lt;/>
+    );
+};
+
+export default Navbar;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

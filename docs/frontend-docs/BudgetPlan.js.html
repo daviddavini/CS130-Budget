@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: BudgetPlan.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: BudgetPlan.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Checkbox, Typography, notification, InputNumber } from 'antd';
+import { useState, useContext } from 'react';
+import { ThemeContext } from './App';
+
+const { Title } = Typography;
+
+/**
+ * BudgetPlan component provides a form for setting the monthly income.
+ * Once income is set, it notifies the user and navigates them to the confirmation page.
+ *
+ * @component
+ * @example
+ * return &lt;BudgetPlan />;
+ *
+ * @returns {JSX.Element} A form component allowing the user to input their monthly income and proceed with their budget plan.
+ */
+const BudgetPlan = () => {
+    const { theme } = useContext(ThemeContext);
+    const [form] = Form.useForm();
+    const [income, setIncome] = useState(0);
+    const navigate = useNavigate();
+
+    /**
+     * Updates the income state based on the user's input.
+     *
+     * @param {number} value - The new income value provided by the user.
+     */
+    const handleIncomeChange = (value) => {
+        setIncome(value);
+    };
+
+    /**
+     * Handles the form submission by logging the budget plan values,
+     * displaying a success notification, storing the income in local storage, and navigating to the confirmation page.
+     *
+     * @param {Object} values - The form values including the user's income.
+     */
+    const onFinish = (values) => {
+        console.log('Budget Plan:', values);
+        notification.success({
+            message: 'Income is set!',
+            description: `Now alter your budget plan according to your income. Click 'Confirm Budget Plan' to save your plans.`,
+        });
+        localStorage.setItem('income', income);
+        navigate('/confirmplan');
+    }
+
+    return (
+        &lt;div>
+            &lt;h1>Let's Make Your Plan&lt;/h1>
+            &lt;Form
+                layout="horizontal"
+                onFinish = {onFinish}
+            >
+                &lt;Form.Item
+                    label="Monthly Income:"
+                    name="income"
+                    rules={[
+                        { required: true, message: 'Income cannot be empty.' },
+                        { type: 'number', message: 'Income must be a number.' },
+                    ]}
+                >
+                    &lt;InputNumber
+                        value={income} 
+                        onChange={handleIncomeChange}
+                        min={0}
+                    />
+                &lt;/Form.Item>
+
+                &lt;Form.Item>
+                    &lt;Button type="primary" htmlType="submit">
+                        Make My Plan
+                    &lt;/Button>
+                &lt;/Form.Item>
+            &lt;/Form>
+        &lt;/div>
+    );
+};
+
+export default BudgetPlan;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
