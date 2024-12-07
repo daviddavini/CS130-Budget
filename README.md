@@ -1,3 +1,17 @@
+# Clever Cash
+
+Clever Cash is a web app that offers the following benefits over current budget apps:
+- Low-friction Login/Signup
+- Camera Receipt Scanning
+- Detailed Spending Habit Analysis
+- Insightful Visual Analytics
+- Accountability Budget Notifications
+- Local Business Recommendations
+
+
+## Documentation
+You can find the full documentation [here](https://natecarman.github.io/CS130-Budget/).
+
 ## How to Build and Deploy
 We deploy our app both **locally** and in our **cloud VPS**.
 
@@ -57,7 +71,4 @@ Additionally, you will need to add the domain of the VPS to the list of allowed 
 ALLOWED_HOSTS = ['www.clevercash.pro', '127.0.0.1', 'localhost']
 ```
 
-That's it! There is almost surely additional configuration (Firewall, DNS, HTTPS, etc.) needed that is specific to your cloud provider. Good luck with that! Seriously good luck.
-
-## Documentation
-You can find the full documentation [here](https://natecarman.github.io/CS130-Budget/).
+That's it! There is almost surely additional configuration (Firewall, DNS, HTTPS, etc.) needed that is specific to your cloud provider. Good luck with that!
