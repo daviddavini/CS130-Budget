@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: LineChart.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: LineChart.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import './Visualization.css';
+
+const COLORS = ['#FF5733', '#33FF57', '#FF33A1', '#FFC300', '#3357FF', '#AAC786', '#900C3F', '#581845', '#FF5733', '#C70039','#FFC300', '#28B463', '#3498DB', '#8E44AD'];
+
+/**
+ * A React component that renders a line chart visualizing cumulative expenses over time.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Object} props.data - The expense data object, where each key is a date (string) and the value is an object 
+ *                              of category-spending pairs. Example:
+ *                              {
+ *                                  "2024-01-01": { "Food": 50, "Housing": 100 },
+ *                                  "2024-01-02": { "Food": 30, "Transportation": 20 }
+ *                              }
+ * @returns {JSX.Element} The rendered ExpenseLineChart component.
+ */
+const ExpenseLineChart = ({ data }) => {
+    const cumulative = {};
+	    
+    const sortedDates = Object.keys(data).sort();
+
+    const processedDateSummary = [];
+
+    sortedDates.forEach(date => {
+        const categories = data[date];
+        const entry = { date };
+
+        // Initialize cumulative totals for any new categories
+        for (const category in categories) {
+            if (!cumulative[category]) {
+                cumulative[category] = 0; // Initialize if not present
+            }
+            
+            // Add current day's spending to cumulative total
+            cumulative[category] += categories[category];
+            cumulative[category] = Math.round(cumulative[category] * 100) / 100; // Round to 2 decimal places
+
+            // Set the cumulative total in the entry
+            entry[category] = cumulative[category];
+        }
+
+        // Ensure all categories are represented in the entry
+        for (const category in cumulative) {
+            if (!(category in entry)) {
+                entry[category] = cumulative[category]; // Include zero if no spending today
+            }
+        }
+
+        processedDateSummary.push(entry);
+    });
+    return (
+        &lt;div>
+            &lt;h3> Expense Progression Overview &lt;/h3>
+            &lt;div className='line-graph'>
+                &lt;LineChart width={600} height={300} data={processedDateSummary}>
+                    &lt;CartesianGrid strokeDasharray="3 3" />
+                    &lt;XAxis dataKey="date" tick={{ fill: '#4EA0FF' }}/>
+                    &lt;YAxis tick={{ fill: '#4EA0FF' }}/>
+                    &lt;Tooltip />
+                    &lt;Legend />
+                    &lt;Line type="monotone" dataKey="Housing" stroke={COLORS[0]} activeDot={{ r: 8 }} />
+                    &lt;Line type="monotone" dataKey="Transportation" stroke={COLORS[1]} />
+                    &lt;Line type="monotone" dataKey="Food" stroke={COLORS[2]} />
+                    &lt;Line type="monotone" dataKey="Utilities" stroke={COLORS[3]} />
+                    &lt;Line type="monotone" dataKey="Medical" stroke={COLORS[4]} />
+                    &lt;Line type="monotone" dataKey="Insurance" stroke={COLORS[5]} />
+                    &lt;Line type="monotone" dataKey="Education" stroke={COLORS[6]} />
+                    &lt;Line type="monotone" dataKey="Entertainment" stroke={COLORS[7]} />
+                    &lt;Line type="monotone" dataKey="Clothing" stroke={COLORS[8]} />
+                    &lt;Line type="monotone" dataKey="Personal Care" stroke={COLORS[9]} />
+                    &lt;Line type="monotone" dataKey="Pet" stroke={COLORS[10]} />
+                    &lt;Line type="monotone" dataKey="Travel" stroke={COLORS[11]} />
+                    &lt;Line type="monotone" dataKey="Gifting" stroke={COLORS[12]} />
+                    &lt;Line type="monotone" dataKey="Misc" stroke={COLORS[13]} />
+                &lt;/LineChart>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default ExpenseLineChart;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

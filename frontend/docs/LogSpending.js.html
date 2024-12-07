@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: LogSpending.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: LogSpending.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import { Dropdown, Menu, Button, Input, DatePicker, Form, Spin, Alert, notification } from 'antd';
+import './LogSpending.css';
+import moment from 'moment';
+
+/**
+ * LogSpending component provides a user interface for logging spending either manually
+ * or by uploading a receipt. It supports form validation, error handling, and notifications.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered LogSpending component.
+ */
+const LogSpending = () => {
+    const [isManual, setIsManual] = useState(false);
+    const [formData, setFormData] = useState({
+        description: '',
+        amount: '',
+        category: '',
+        date: '',
+    });
+    const [receipt, setReceipt] = useState(null);
+    const [loading, setLoading] = useState(false); // Loading state
+    const [error, setError] = useState(null); // Error state
+
+    /**
+     * Handles changes in input fields for the manual entry form.
+     *
+     * @param {Object} e - The change event.
+     */
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+	console.log(`Selected ${name}: ${value}`); // Log selected category
+        setFormData({ ...formData, [name]: value });
+	console.log(formData);
+    };
+
+    /**
+     * Handles the selection of a category from the dropdown menu.
+     *
+     * @param {Object} e - The click event.
+     */
+    const handleMenuClick = (e) => {
+        setFormData({ ...formData, category: e.key });
+    };
+
+    /**
+     * Handles changes in the date picker for the manual entry form.
+     *
+     * @param {moment.Moment} date - The selected date as a Moment.js object.
+     * @param {string} dateString - The selected date as a string.
+     */
+    const handleDateChange = (date, dateString) => {
+        setFormData({ ...formData, date: dateString });
+    };
+
+    /**
+     * Handles the upload of a receipt file.
+     *
+     * @param {Object} e - The change event.
+     */
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0];
+        setReceipt(file);
+    };
+
+    /**
+     * Switches the interface to manual input mode.
+     */
+    const handleManualInputClick = () => {
+        setIsManual(true);
+        setError(null); // Reset error when switching to manual input
+    };
+
+    /**
+     * Switches the interface to receipt upload mode.
+     */
+    const handleUploadReceiptClick = () => {
+        setReceipt(null);
+        setIsManual(false);
+        setError(null); // Reset error when switching to upload receipt
+    };
+
+    /**
+     * Handles form submission for logging spending.
+     *
+     * @async
+     * @param {Object} e - The submit event.
+     */
+    const handleSubmit = async (e) => {
+        const token = localStorage.getItem('token');
+    setLoading(true); // Set loading to true
+    setError(null); // Reset any previous errors  
+    //e.preventDefault();
+        if (isManual) {
+      const amount = formData.amount;
+      const category = formData.category;
+      const date = formData.date;
+            try {
+        if (token === null) {
+          throw new Error("You have not logged in yet!");
+        }
+                const response = await fetch(`/api/manual-input/?amount=${amount}&amp;category=${category}&amp;date=${date}`, {
+                    method: 'GET',
+          headers: {
+            'Authorization': `Token ${token}`,
+          }
+                });
+                if (!response.ok) {
+          const errorData = await response.json(); // Get error data from response
+                    throw new Error(errorData.error || 'An unknown error occurred');
+                }
+
+                const data = await response.json();
+        console.log('Manual Entry:', formData);
+        console.log('Response: ', data);
+
+        setError(null); // Set error message
+	notification.success({
+	    message: 'Spending logged successfully',
+	    description: ``,
+        });
+            } catch (error) {
+        console.error('Error during manual entry:', error);
+        setError(error.message); // Set error message
+            }
+        } else if (receipt) {
+            const form = new FormData();
+      form.append('image', receipt); // Use 'image' as the key
+
+            try {
+        if (token === null) {
+          throw new Error("You have not logged in yet!");
+        }
+                const response = await fetch('api/scan/', {
+                    method: 'POST',
+          headers: {
+            'Authorization': `Token ${token}`
+          },
+                    body: form,
+                });
+                if (!response.ok) {
+          const errorData = await response.json(); // Get error data from response
+                    throw new Error(errorData.error || 'An unknown error occurred');
+                }
+                const result = await response.json();
+        console.log('OCR Result:', result);
+        setError(null);
+	notification.success({
+	    message: 'Receipt logged successfully',
+	    description: "",
+        });
+            } catch (error) {
+        console.error('Error during receipt handling:', error);
+        setError(error.message); // Set error message
+            }
+      console.log('Uploaded Receipt:', receipt.name);
+      setFormData({ description: '', amount: '', category: '', date: '' });
+        }
+
+        setReceipt(null);
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        console.log('Current Form Data:', formData);
+    }, [formData]);
+
+    const menu = (
+        &lt;Menu onClick={handleMenuClick}>
+            &lt;Menu.Item key="Savings">Savings&lt;/Menu.Item>
+            &lt;Menu.Item key="Housing">Housing&lt;/Menu.Item>
+            &lt;Menu.Item key="Transportation">Transportation&lt;/Menu.Item>
+            &lt;Menu.Item key="Food">Food&lt;/Menu.Item>
+            &lt;Menu.Item key="Utilities">Utilities&lt;/Menu.Item>
+            &lt;Menu.Item key="Medical">Medical&lt;/Menu.Item>
+            &lt;Menu.Item key="Insurance">Insurance&lt;/Menu.Item>
+            &lt;Menu.Item key="Education">Education&lt;/Menu.Item>
+            &lt;Menu.Item key="Entertainment">Entertainment&lt;/Menu.Item>
+            &lt;Menu.Item key="Clothing">Clothing&lt;/Menu.Item>
+            &lt;Menu.Item key="Personal Care">Personal Care&lt;/Menu.Item>
+            &lt;Menu.Item key="Pet">Pet&lt;/Menu.Item>
+            &lt;Menu.Item key="Travel">Travel&lt;/Menu.Item>
+            &lt;Menu.Item key="Gifting">Gifting&lt;/Menu.Item>
+            &lt;Menu.Item key="Misc">Miscellaneous&lt;/Menu.Item>
+        &lt;/Menu>
+    );
+
+    return (
+        &lt;div className="log-spending">
+            &lt;h1>Log Spending&lt;/h1>
+            &lt;div className="options">
+                &lt;Button onClick={handleManualInputClick} type={isManual ? 'primary' : 'default'}>
+                    Input Manually
+                &lt;/Button>
+                &lt;Button onClick={handleUploadReceiptClick} type={!isManual ? 'primary' : 'default'}>
+                    Upload Receipt
+                &lt;/Button>
+            &lt;/div>
+            &lt;Form
+                onFinish={handleSubmit}
+                layout="vertical"
+                style={{ maxWidth: '450px', margin: 'auto', minWidth: '400px' }}>
+
+        {loading &amp;&amp; &lt;Spin />} {/* Loading indicator */}
+        {error &amp;&amp; &lt;Alert message={error} type="error" />} {/* Error message */}
+                {isManual ? (
+                    &lt;div className="manual-input">
+                        &lt;Form.Item label="Description">
+                            &lt;Input
+                                type="text"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        &lt;/Form.Item>
+                        &lt;Form.Item label="Amount">
+                            &lt;Input
+                                type="number"
+                                name="amount"
+                                value={formData.amount}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        &lt;/Form.Item>
+                        &lt;Form.Item label="Category">
+                            &lt;Dropdown overlay={menu}>
+                                &lt;Button style={{ width: '100%' }}>
+                                    {formData.category || 'Select a category'}
+                                &lt;/Button>
+                            &lt;/Dropdown>
+                        &lt;/Form.Item>
+                        &lt;Form.Item label="Date">
+                            &lt;DatePicker
+                                name="date"
+                                style={{ width: '100%' }}
+                                value={formData.date ? moment(formData.date) : null}
+                                onChange={handleDateChange}
+                                required
+                            />
+                        &lt;/Form.Item>
+                        &lt;Form.Item>
+                            &lt;Button type="primary" htmlType="submit">Submit&lt;/Button>
+                        &lt;/Form.Item>
+                    &lt;/div>
+                ) : (
+                    &lt;div className="upload-receipt">
+                        &lt;Form.Item label="Upload Receipt">
+                            &lt;Input
+                                type="file"
+                                onChange={handleFileUpload}
+                                key={isManual ? 'manual' : 'upload'}
+                                accept="image/*"
+                            />
+                        &lt;/Form.Item>
+                        &lt;Button type="primary" htmlType="submit">Submit&lt;/Button>
+                    &lt;/div>
+                )}
+            &lt;/Form>
+        &lt;/div>
+    );
+};
+
+export default LogSpending;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

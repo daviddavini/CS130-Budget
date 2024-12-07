@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Login.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Login.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import GoogleLoginButton from './GoogleLoginButton';
+import { Link, useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Checkbox, Typography, notification, Divider } from 'antd';
+import { AuthContext } from './AuthContext';
+import { useContext } from 'react';
+import { ThemeContext } from './App';
+import piggy from './assets/Piggy.png';
+import './Login.css';
+
+const { Title } = Typography;
+
+/**
+ * Login component provides a user interface for logging in with username and password
+ * or using Google OAuth. It includes form validation, error handling, and user notifications.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Login component.
+ */
+const Login = () => {
+    const { theme } = useContext(ThemeContext);  // Access theme from context
+    const { login } = useContext(AuthContext);  // Access login function from AuthContext
+    const navigate = useNavigate();
+
+    /**
+     * Handles the form submission for login.
+     *
+     * @async
+     * @param {Object} values - The form values containing `username` and `password`.
+     */
+    const onFinish = async (values) => {
+        const signinData = {
+            username: values.username,
+	    password: values.password
+	}
+        // For simplicity, just log the user data
+        console.log('Received values:', signinData);
+        try {
+            const response = await fetch('/api/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signinData),
+            });
+            if (!response.ok) {
+                throw new Error('Signin Failed');
+            }
+            const data = await response.json();
+            if (data.token) {
+                login(data.token, 'manual');
+            } else if (data.error) {
+                throw new Error('Authentication error:', data.error);
+            }
+            notification.success({
+                message: 'Login Successful',
+                description: `Welcome back, ${values.username}!`,
+            });
+            navigate('/');
+        } catch (error) {
+            console.error('Error during sign in:', error);
+            notification.warning({
+                message: 'Login Failed',
+                description: `Incorrect username or password`,
+            });
+        }
+    };
+
+    return (
+        &lt;div className={`login-block ${theme}`} style={{ padding: '50px', maxWidth: '600px', margin: 'auto' }}>
+            &lt;img
+                src={piggy}
+                alt=""
+                className="login-piggy"
+            />
+            &lt;Title level={1} style={{ textAlign: 'center' }}>Clever Cash Login&lt;/Title>
+            &lt;div>
+                &lt;Form
+                    name="login_form"
+                    onFinish={onFinish}
+                    layout="vertical"
+                    initialValues={{ remember: true }}
+                >
+                    {/* Email/Username */}
+                    &lt;Form.Item
+                        label="Email/Username:"
+                        name="username"
+                        rules={[{ required: true, message: 'Email/Username cannot be empty.' }]}
+                    >
+                        &lt;Input />
+                    &lt;/Form.Item>
+
+                    {/* Password */}
+                    &lt;Form.Item
+                        label="Password:"
+                        name="password"
+                        rules={[{ required: true, message: 'Password cannot be empty.' }]}
+                    >
+                        &lt;Input.Password />
+                    &lt;/Form.Item>
+
+                    {/* Remember credentials */}
+                    &lt;Form.Item name="remember" valuePropName="checked">
+                        &lt;Checkbox>Remember me&lt;/Checkbox>
+                    &lt;/Form.Item>
+
+                    {/* Login and Signup Buttons */}
+                    &lt;Form.Item>
+                        &lt;div className='login-and-signup'>
+                            &lt;Button type="primary" htmlType="submit" block>
+                                Log In
+                            &lt;/Button>
+                            &lt;span>or&lt;/span>
+                            &lt;Link to="/signup">
+                                &lt;Button type="default" htmlType='button'>
+                                    Sign Up
+                                &lt;/Button>
+                            &lt;/Link>
+                        &lt;/div>
+                    &lt;/Form.Item>
+                
+                    &lt;Divider>OR&lt;/Divider>
+
+                    &lt;Title level={2}>Sign in with Google&lt;/Title>
+
+                    &lt;Form.Item>
+                        &lt;GoogleLoginButton />
+                    &lt;/Form.Item>
+                &lt;/Form>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default Login;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

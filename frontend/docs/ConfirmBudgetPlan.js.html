@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ConfirmBudgetPlan.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ConfirmBudgetPlan.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Checkbox, Typography, notification, Row, Col, Slider, InputNumber } from 'antd';
+import { useState, useContext } from 'react';
+import { ThemeContext } from './App';
+
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend,
+    Chart,
+} from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const { Title } = Typography;
+
+/**
+ * ConfirmBudgetPlan component allows users to confirm or adjust their budget allocations across various categories.
+ * It presents a Doughnut chart to visualize allocations and provides sliders and input fields to adjust them.
+ *
+ * On submission, it attempts to save the budget plan via a backend API call.
+ *
+ * @component
+ * @example
+ * return &lt;ConfirmBudgetPlan />;
+ *
+ * @returns {JSX.Element} A form and chart interface for finalizing a user's budget plan.
+ */
+const ConfirmBudgetPlan = () => {
+    const income = localStorage.getItem('income'); // Placeholder for income, retrieved from local storage
+    const theme = useContext(ThemeContext);
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
+
+    const [categoryLimits, setCategoryLimit] = useState({
+        savings: income * 0.2,
+        housing: income * 0.3,
+        transportation: 0,
+        food: income * 0.1,
+        utilities: 0,
+        medical: 0,
+        insurance: 0,
+        education: 0,
+        entertainment: 0,
+        clothing: 0,
+        personal: 0,
+        pet: 0,
+        travel: 0,
+        gifting: 0,
+        miscellaneous: 0,
+    });
+
+    const remainingBudget = income - Object.values(categoryLimits).reduce((sum, value) => sum + value, 0);
+
+    const data = {
+        labels: Object.keys(categoryLimits),
+        datasets: [
+            {
+                label: 'Budget Plan',
+                data: Object.values(categoryLimits),
+                backgroundColor: [
+                    'rgb(33, 13, 38)',
+                    'rgb(99, 38, 115)',
+                    'rgb(128, 79, 179)',
+                    'rgb(200, 150, 250)',
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 206, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 206, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)',
+                ],
+                hoverOffset: 4,
+                circumference: 360,
+                rotation: 0
+            },
+        ],
+    };
+
+    const options = {
+        plugins: {
+            legend: {
+                position: 'left',
+                labels : {
+                    color: '#00AFCF',
+                },
+            },
+        },
+    };
+
+    /**
+     * Updates the specified category limit based on user input from the sliders or input fields.
+     * Ensures that the category does not exceed the remaining available budget.
+     *
+     * @param {string} category - The category to update.
+     * @param {number} newValue - The new budget value for the specified category.
+     */
+    const handleSliderChange = (category, newValue) => {
+        setCategoryLimit(prevLimits => {
+            const otherCategoriesTotal = Object.entries(prevLimits)
+                .filter(([key]) => key !== category)
+                .reduce((sum, [_, value]) => sum + value, 0);
+
+            const maxAllowedValue = income - otherCategoriesTotal;
+            const adjustedValue = Math.min(newValue, maxAllowedValue);
+
+            return {
+                ...prevLimits,
+                [category]: adjustedValue
+            };
+        });
+    };
+
+    /**
+     * Handles form submission by packaging the category limits into a budget plan,
+     * calling the backend API to save them, and on success, navigating to the home page.
+     * If the user is not logged in or the backend responds with an error, it logs the error.
+     *
+     * @async
+     * @function
+     * @param {Object} values - The current form values.
+     */
+    const onFinish = async (values) => {
+        console.log('Budget Plan:', values);
+        const budgetPlan = Object.entries(categoryLimits).map(([category, amount]) => [category, amount]);
+        try {
+            if (localStorage.getItem('token') === null) {
+                throw new Error("You have not logged in yet!")
+            }
+            const response = await fetch('/api/set/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(budgetPlan)
+            });
+            if (!response.ok) {
+                throw new Error("Error in backend");
+            }
+            const data = await response.json();
+
+            notification.success({
+                message: 'Budget Plan Confirmed',
+                description: `Happy Saving!`,
+            });
+            navigate('/');
+        } catch (error) {
+            console.error("Error saving budget plan: ", error);
+        }
+    };
+
+    return (
+        &lt;div style={{ theme }}>
+            &lt;Title level={2}>Confirm Budget Plan&lt;/Title>
+            &lt;Form
+                form={form}
+                layout="vertical"
+                style={{ maxWidth: 600, margin: 'auto' }}
+                onFinish={onFinish}
+                initialValues={{
+                    savings: 0,
+                    housing: 0,
+                    transportation: 0,
+                    food: 0,
+                    utilities: 0,
+                    medical: 0,
+                    insurance: 0,
+                    education: 0,
+                    entertainment: 0,
+                    clothing: 0,
+                    personal: 0,
+                    pet: 0,
+                    travel: 0,
+                    gifting: 0,
+                    miscellaneous: 0,
+                }}
+            >
+                &lt;Doughnut data={data} options={options} />
+                &lt;div> Remaining Budget: ${remainingBudget.toFixed(2)} &lt;/div>
+                &lt;Form.Item label="Current Budget Plan">
+                    &lt;Row gutter={[16, 16]}>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Savings" name="savings">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.savings}
+                                            value={categoryLimits.savings}
+                                            onChange={(value) => handleSliderChange('savings', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.savings}
+                                            value={categoryLimits.savings}
+                                            onChange={(value) => handleSliderChange('savings', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Housing" name="housing">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.housing}
+                                            value={categoryLimits.housing}
+                                            onChange={(value) => handleSliderChange('housing', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.housing}
+                                            value={categoryLimits.housing}
+                                            onChange={(value) => handleSliderChange('housing', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Transportation" name="transportation">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.transportation}
+                                            value={categoryLimits.transportation}
+                                            onChange={(value) => handleSliderChange('transportation', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.transportation}
+                                            value={categoryLimits.transportation}
+                                            onChange={(value) => handleSliderChange('transportation', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Food" name="food">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.food}
+                                            value={categoryLimits.food}
+                                            onChange={(value) => handleSliderChange('food', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.food}
+                                            value={categoryLimits.food}
+                                            onChange={(value) => handleSliderChange('food', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Utilities" name="utilities">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.utilities}
+                                            value={categoryLimits.utilities}
+                                            onChange={(value) => handleSliderChange('utilities', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.utilities}
+                                            value={categoryLimits.utilities}
+                                            onChange={(value) => handleSliderChange('utilities', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Medical" name="medical">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.medical}
+                                            value={categoryLimits.medical}
+                                            onChange={(value) => handleSliderChange('medical', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.medical}
+                                            value={categoryLimits.medical}
+                                            onChange={(value) => handleSliderChange('medical', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Insurance" name="insurance">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.insurance}
+                                            value={categoryLimits.insurance}
+                                            onChange={(value) => handleSliderChange('insurance', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.insurance}
+                                            value={categoryLimits.insurance}
+                                            onChange={(value) => handleSliderChange('insurance', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Education" name="education">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.education}
+                                            value={categoryLimits.education}
+                                            onChange={(value) => handleSliderChange('education', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.education}
+                                            value={categoryLimits.education}
+                                            onChange={(value) => handleSliderChange('education', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Entertainment" name="entertainment">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.entertainment}
+                                            value={categoryLimits.entertainment}
+                                            onChange={(value) => handleSliderChange('entertainment', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.entertainment}
+                                            value={categoryLimits.entertainment}
+                                            onChange={(value) => handleSliderChange('entertainment', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Clothing" name="clothing">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.clothing}
+                                            value={categoryLimits.clothing}
+                                            onChange={(value) => handleSliderChange('clothing', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.clothing}
+                                            value={categoryLimits.clothing}
+                                            onChange={(value) => handleSliderChange('clothing', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Personal" name="personal">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.personal}
+                                            value={categoryLimits.personal}
+                                            onChange={(value) => handleSliderChange('personal', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.personal}
+                                            value={categoryLimits.personal}
+                                            onChange={(value) => handleSliderChange('personal', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Pet" name="pet">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.pet}
+                                            value={categoryLimits.pet}
+                                            onChange={(value) => handleSliderChange('pet', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.pet}
+                                            value={categoryLimits.pet}
+                                            onChange={(value) => handleSliderChange('pet', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Travel" name="travel">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.travel}
+                                            value={categoryLimits.travel}
+                                            onChange={(value) => handleSliderChange('travel', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.travel}
+                                            value={categoryLimits.travel}
+                                            onChange={(value) => handleSliderChange('travel', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Gifting" name="gifting">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.gifting}
+                                            value={categoryLimits.gifting}
+                                            onChange={(value) => handleSliderChange('gifting', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.gifting}
+                                            value={categoryLimits.gifting}
+                                            onChange={(value) => handleSliderChange('gifting', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                        &lt;Col span={12}>
+                            &lt;Form.Item label="Miscellaneous" name="miscellaneous">
+                                &lt;Row>
+                                    &lt;Col span={16}>
+                                        &lt;Slider
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.miscellaneous}
+                                            value={categoryLimits.miscellaneous}
+                                            onChange={(value) => handleSliderChange('miscellaneous', value)}
+                                        />
+                                    &lt;/Col>
+                                    &lt;Col span={6} offset={2}>
+                                        &lt;InputNumber
+                                            min={0}
+                                            max={remainingBudget + categoryLimits.miscellaneous}
+                                            value={categoryLimits.miscellaneous}
+                                            onChange={(value) => handleSliderChange('miscellaneous', value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    &lt;/Col>
+                                &lt;/Row>
+                            &lt;/Form.Item>
+                        &lt;/Col>
+                    &lt;/Row>
+                &lt;/Form.Item>
+
+                &lt;Form.Item>
+                    &lt;Button type="primary" htmlType="submit">
+                        Confirm Budget Plan
+                    &lt;/Button>
+                &lt;/Form.Item>
+            &lt;/Form>
+
+            &lt;Link to="/budgetplan" style={{ color: theme.primaryColor }}>
+                &lt;Button type="link" htmlType="button">
+                    Back to Budget Plans
+                &lt;/Button>
+            &lt;/Link>
+        &lt;/div>
+    );
+};
+
+export default ConfirmBudgetPlan;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

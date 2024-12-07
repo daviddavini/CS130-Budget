@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Signup.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Signup.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Typography, notification } from 'antd';
+import { useContext } from 'react';
+import { AuthContext } from './AuthContext';
+import { ThemeContext } from './App';
+import piggy from './assets/Piggy.png';
+import './Login.css';
+
+const { Title } = Typography;
+
+/**
+ * Signup component allows users to create a new account by providing a username and password.
+ * It includes form validation, error handling, and user notifications upon success or failure.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Signup component.
+ */
+const Signup = () => {
+    const { theme } = useContext(ThemeContext); // Access theme from ThemeContext
+    const { login } = useContext(AuthContext); // Access login function from AuthContext
+    const navigate = useNavigate();
+
+    /**
+     * Handles the form submission for account creation.
+     *
+     * @async
+     * @param {Object} values - The form values containing `username` and `password`.
+     */
+    const onFinish = async (values) => {
+        const signupData = {
+            username: values.username,
+            password: values.password,
+        };
+        console.log('Sign-Up Data:', signupData);
+        try {
+            const response = await fetch('/api/signup/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signupData),
+            });
+            if (!response.ok) {
+                throw new Error('Signup Failed');
+            }
+            const data = await response.json();
+            if (data.token) {
+                login(data.token, 'manual');
+            } else if (data.error) {
+                throw new Error('Authentication error:', data.error);
+            }
+            notification.success({
+                message: 'Account Created',
+                description: `Welcome, ${values.username}! Your account has been successfully created.`,
+            });
+            navigate('/budgetplan');
+        } catch (error) {
+            console.error("Error during manual sign up:", error);
+            notification.warning({
+                message: 'Sign up Failed',
+                description: `Your username has been already taken`,
+            });
+        }
+    };
+
+    return (
+        &lt;div className={`signup-block ${theme}`} style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
+            &lt;img
+                src={piggy}
+                alt=""
+                className="signup-piggy"
+            />
+            &lt;Title level={2} style={{ textAlign: 'center' }}>Welcome to Clever Cash!&lt;/Title>
+            &lt;Form
+                name="signup_form"
+                onFinish={onFinish}
+                layout="vertical"
+            >
+                &lt;Form.Item
+                    label="Enter your email or create a username:"
+                    name="username"
+                    rules={[{ required: true, message: 'Email/Username cannot be empty.' }]}
+                >
+                    &lt;Input />
+                &lt;/Form.Item>
+                &lt;Form.Item
+                    label="Create password:"
+                    name="password"
+                    rules={[{ required: true, message: 'Password cannot be empty.' }]}
+                >
+                    &lt;Input.Password />
+                &lt;/Form.Item>
+                &lt;Form.Item
+                    label="Confirm password:"
+                    name="confirm"
+                    dependencies={['password']}
+                    hasFeedback
+                    rules={[
+                        { required: true, message: 'Passwords don\'t match or field is empty.' },
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value || getFieldValue('password') === value) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('The two passwords do not match.'));
+                            },
+                        }),
+                    ]}
+                >
+                    &lt;Input.Password />
+                &lt;/Form.Item>
+                &lt;Form.Item>
+                    &lt;Button type="primary" htmlType="submit" block>
+                        Start Saving!
+                    &lt;/Button>
+                    &lt;Link to="/login">
+                        &lt;Button type="default" htmlType='button' style={{ marginTop: '15px' }}>
+                            ← Back
+                        &lt;/Button>
+                    &lt;/Link>
+                &lt;/Form.Item>
+            &lt;/Form>
+        &lt;/div>
+    );
+};
+
+export default Signup;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#BudgetPlan">BudgetPlan</a></li><li><a href="global.html#COLORS">COLORS</a></li><li><a href="global.html#ConfirmBudgetPlan">ConfirmBudgetPlan</a></li><li><a href="global.html#ExpenseBarChart">ExpenseBarChart</a></li><li><a href="global.html#ExpenseLineChart">ExpenseLineChart</a></li><li><a href="global.html#ExpensePieChart">ExpensePieChart</a></li><li><a href="global.html#GoalComparisonChart">GoalComparisonChart</a></li><li><a href="global.html#GoogleLoginButton">GoogleLoginButton</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LocationItem">LocationItem</a></li><li><a href="global.html#LocationResults">LocationResults</a></li><li><a href="global.html#LocationSearch">LocationSearch</a></li><li><a href="global.html#LogSpending">LogSpending</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PrivateRoute">PrivateRoute</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#UserProfileIcon">UserProfileIcon</a></li><li><a href="global.html#Views">Views</a></li><li><a href="global.html#Visualization">Visualization</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Dec 06 2024 19:07:28 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
