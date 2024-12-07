@@ -27,7 +27,7 @@ npm run build
 ```
 
 ## Documentation
-You can find the full documentation [here](budgeter/docs/build/html/index.html).
+You can find the full documentation [here](https://natecarman.github.io/CS130-Budget/).
 
 # Repository Template
 
